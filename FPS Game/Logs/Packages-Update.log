@@ -1,0 +1,10 @@
+
+=== Sun Jul 16 18:17:27 2023
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were added:
+  com.unity.ai.navigation@1.1.4
+The following packages were updated:
+  com.unity.timeline from version 1.6.5 to 1.7.4

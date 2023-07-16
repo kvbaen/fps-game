@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7493e4e85cb1b744c9a0bc4cafed4105, type: 3}
+  m_Name: M4
+  m_EditorClassIdentifier: 
+  name: M4
+  damage: 25
+  maxDistance: 500
+  allowButtonHold: 1
+  spread: 0.1
+  timeBetweenShooting: 0.15
+  timeBetweenShots: 0.15
+  bulletsPerTap: 1
+  recoilForce: 0
+  fireRate: 600
+  shootForce: 60
+  upwardForce: 0
+  currentAmmo: 25
+  magSize: 25
+  reloadTime: 1
+  reloading: 0
