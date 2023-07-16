@@ -1,4 +1,3 @@
-using FpsGame.Manager;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,21 +13,22 @@ public class KnifeAttack:MonoBehaviour
     private float time = 0;
 
     private bool isAttacking = false;
-    private InputManager _inputManager;
     public TextMeshProUGUI AmmunitionDisplay;
     public Transform AttackPoint;
     [SerializeField] private Camera _fpsCam;
     [SerializeField] private string EnemyTag;
     [SerializeField] private GameObject _bulletHolePrefab;
     [SerializeField] private float knifeHoleLifeSpan = 5;
-    private void Start()
+    private PlayerController playerController;
+    private bool ShouldAttack => Input.GetKeyDown(playerController.shootKey) && !isAttacking && this.gameObject.activeInHierarchy && time >= timeBetweenAttack;
+    private void Awake()
     {
-        _inputManager = GetComponentInParent<InputManager>();
+        playerController = GetComponentInParent<PlayerController>();
     }
 
     private void Update()
     {
-        if (_inputManager.Shoot && !isAttacking && this.gameObject.activeInHierarchy && time>=timeBetweenAttack)
+        if (ShouldAttack)
         {
             isAttacking = true;
             PerformAttack();

@@ -1,8 +1,6 @@
-using FpsGame.Manager;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class WeaponSwitching : MonoBehaviour
 {
@@ -14,11 +12,17 @@ public class WeaponSwitching : MonoBehaviour
     [SerializeField] private int selectedWeapon;
 
     private float timeSinceLastSwitch;
-    private InputManager _inputManager;
-
+    private bool ShouldSwitchToFirstGun => Input.GetKeyDown(playerController.switchToFirstGunKey) && timeSinceLastSwitch >= switchTime;
+    private bool ShouldSwitchToSecondGun => Input.GetKeyDown(playerController.switchToSecondGunKey) && timeSinceLastSwitch >= switchTime;
+    private bool ShouldSwitchToKnife => Input.GetKeyDown(playerController.switchToKnifeKey) && timeSinceLastSwitch >= switchTime;
+    private bool ShouldSwitchToGranade => Input.GetKeyDown(playerController.switchToGranadeKey) && timeSinceLastSwitch >= switchTime;
+    private PlayerController playerController;
+    private void Awake()
+    {
+        playerController = GetComponentInParent<PlayerController>();
+    }
     private void Start()
     {
-        _inputManager = GetComponentInParent<InputManager>();
         SetWeapon();
         Select(selectedWeapon);
         timeSinceLastSwitch = 0f;
@@ -27,22 +31,22 @@ public class WeaponSwitching : MonoBehaviour
     private void Update()
     {
         int previousSelectedWeapon = selectedWeapon;
-        if (_inputManager.SwitchToRifle && timeSinceLastSwitch >= switchTime)
+        if (ShouldSwitchToFirstGun)
         {
             selectedWeapon = 0;
         }
 
-        if (_inputManager.SwitchToPistol && timeSinceLastSwitch >= switchTime)
+        if (ShouldSwitchToSecondGun)
         {
             selectedWeapon = 1;
         }
 
-        if (_inputManager.SwitchToKnife && timeSinceLastSwitch >= switchTime)
+        if (ShouldSwitchToKnife)
         {
             selectedWeapon = 2;
         }
 
-        if (_inputManager.SwitchToGrenade && timeSinceLastSwitch >= switchTime)
+        if (ShouldSwitchToGranade)
         {
             selectedWeapon = 3;
         }

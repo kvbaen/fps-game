@@ -18,6 +18,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private KeyCode sprintKey = KeyCode.LeftShift;
     [SerializeField] private KeyCode jumpKey = KeyCode.Space;
     [SerializeField] private KeyCode crouchKey = KeyCode.LeftControl;
+    [SerializeField] public KeyCode shootKey = KeyCode.Mouse0;
+    [SerializeField] public KeyCode dropKey = KeyCode.G;
+    [SerializeField] public KeyCode actionKey = KeyCode.E;
+    [SerializeField] public KeyCode reloadKey = KeyCode.R;
+    [SerializeField] public KeyCode switchToFirstGunKey = KeyCode.Alpha1;
+    [SerializeField] public KeyCode switchToSecondGunKey = KeyCode.Alpha2;
+    [SerializeField] public KeyCode switchToKnifeKey = KeyCode.Alpha3;
+    [SerializeField] public KeyCode switchToGranadeKey = KeyCode.Alpha4;
 
     [Header("Movement Parameters")]
     [SerializeField] private float walkSpeed = 3.0f;

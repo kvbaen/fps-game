@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using FpsGame.Manager;
 using UnityEngine.Rendering.Universal;
 
 namespace FpsGame.ProjectileGun
@@ -10,16 +9,15 @@ namespace FpsGame.ProjectileGun
     public class ProjectileGun : MonoBehaviour
     {
         public GameObject Bullet;
-        private InputManager _inputManager;
+        private PlayerController playerController;
 
         //Gun stats
         int _bulletsLeft, _bulletsShot;
 
-        //Recoil
-        public Rigidbody PlayerRb;
-
         //bools
         bool _shooting, _readyToShoot, _reloading;
+        private bool ShouldShoot => Input.GetKeyDown(playerController.shootKey);
+        private bool ShouldReload => Input.GetKeyDown(playerController.reloadKey) && _bulletsLeft < _gunData.magSize && !_reloading && this.gameObject.activeSelf;
 
         //Reference
         public Camera FpsCam;
@@ -39,11 +37,7 @@ namespace FpsGame.ProjectileGun
             //make sure magazine is full
             _bulletsLeft = _gunData.magSize;
             _readyToShoot = true;
-        }
-
-        private void Start()
-        {
-            _inputManager = GetComponentInParent<InputManager>();
+            playerController = GetComponentInParent<PlayerController>();
         }
 
         private void FixedUpdate()
@@ -62,20 +56,20 @@ namespace FpsGame.ProjectileGun
             //Check if allowed to hold down button and take corresponding input
             if (time > _gunData.timeBetweenShooting)
             {
-                if (_gunData.allowButtonHold) _shooting = _inputManager.Shoot;
+                if (_gunData.allowButtonHold) _shooting = ShouldShoot;
                 else
                 {
                     if (_bulletsShot == 0)
                     {
-                        _shooting = _inputManager.Shoot;
+                        _shooting = ShouldShoot;
                         _readyToShoot = true;
                     }
                 }
             }
             //Reloading
-            if (!_inputManager.Shoot) { _bulletsShot = 0; }
+            if (!ShouldShoot) { _bulletsShot = 0; }
 
-            if (_inputManager.Reload && _bulletsLeft < _gunData.magSize && !_reloading && this.gameObject.activeSelf) Reload();
+            if (ShouldReload) Reload();
             //Reload automatically when trying to shoot without ammo
             if (_readyToShoot && _shooting && !_reloading && _bulletsLeft <= 0 && this.gameObject.activeSelf) Reload();
 
@@ -161,7 +155,7 @@ namespace FpsGame.ProjectileGun
                     AllowInvoke = false;
                 }
                 //Add recoil to player (should only be called once)
-                PlayerRb.AddForce(-directionWithSpread.normalized * _gunData.recoilForce, ForceMode.Impulse);
+                //PlayerRb.AddForce(-directionWithSpread.normalized * _gunData.recoilForce, ForceMode.Impulse);
             }
 
             //if more than one bulletsPerTap make sure to repeat shoot function

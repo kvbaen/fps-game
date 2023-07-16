@@ -1,11 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using FpsGame.Manager;
 using UnityEngine;
 
 public class GrenadeThrow : MonoBehaviour
 {
-    private InputManager _inputManager;
     [SerializeField]
     public bool equipped;
     [SerializeField]
@@ -14,16 +12,19 @@ public class GrenadeThrow : MonoBehaviour
     public Collider coll;
     [SerializeField]
     public float dropForwardForce, dropUpwardForce, throwForceForward = 10f, throwForceUp = 5f, pickUpRange, timeBetweenSwitching = 0.5f;
-
+    private bool ShouldThrow => Input.GetKeyDown(playerController.shootKey) && equipped;
+    private bool ShouldPickUp => Input.GetKeyDown(playerController.actionKey) && !gunContainer.SlotFull && !equipped;
     public Transform player;
     public Camera fpsCam;
     public WeaponSlot gunContainer;
     public Grenade grenadeScript;
-
-    // Start is called before the first frame update
+    private PlayerController playerController;
+    private void Awake()
+    {
+        playerController = GetComponentInParent<PlayerController>();
+    }
     void Start()
     {
-        _inputManager = GetComponentInParent<InputManager>();
         grenadeScript.enabled = false;
         if (!equipped)
         {
@@ -45,13 +46,13 @@ public class GrenadeThrow : MonoBehaviour
     void Update()
     {
 
-        if (_inputManager.Shoot && equipped && this.gameObject.activeInHierarchy)
+        if (ShouldThrow && this.gameObject.activeInHierarchy)
         {
             ThrowGrenade();
             Invoke(nameof(ChangeItem), timeBetweenSwitching);
         }
 
-        if (_inputManager.Drop && equipped && this.gameObject.activeInHierarchy)
+        if (ShouldThrow && this.gameObject.activeInHierarchy)
         {
             Drop();
             Invoke(nameof(ChangeItem), timeBetweenSwitching);
@@ -65,7 +66,7 @@ public class GrenadeThrow : MonoBehaviour
 
         Vector3 distanceToPlayer = player.position - transform.position;
 
-        if (!equipped && distanceToPlayer.magnitude <= pickUpRange && _inputManager.Action && !gunContainer.SlotFull)
+        if (ShouldPickUp && distanceToPlayer.magnitude <= pickUpRange)
         {
             Ray ray = fpsCam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
             RaycastHit hit;

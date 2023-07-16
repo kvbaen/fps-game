@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using FpsGame.Manager;
 using FpsGame.ProjectileGun;
 using UnityEngine;
 
@@ -16,12 +15,15 @@ public class PickUpController : MonoBehaviour
     public float pickUpRange;
     public float dropForwardForce, dropUpwardForce;
     public bool equipped;
-
-    private InputManager _inputManager;
-
+    private PlayerController playerController;
+    private bool ShouldPickUp => Input.GetKeyDown(playerController.actionKey) && !equipped;
+    private bool ShouldDrop => Input.GetKeyDown(playerController.dropKey) && equipped;
+    private void Awake()
+    {
+        playerController = GetComponentInParent<PlayerController>();
+    }
     void Start()
     { 
-        _inputManager = GetComponent<InputManager>();
         if (!equipped)
         {
             gunScript.enabled = false;
@@ -45,7 +47,7 @@ public class PickUpController : MonoBehaviour
             transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
         }
         Vector3 distanceToPlayer = player.position - transform.position;
-        if (!equipped && distanceToPlayer.magnitude <= pickUpRange && _inputManager.Action)
+        if (ShouldPickUp && distanceToPlayer.magnitude <= pickUpRange)
         {
             Ray ray = FpsCam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
             RaycastHit hit;
@@ -66,7 +68,7 @@ public class PickUpController : MonoBehaviour
             }
         }
 
-        if(equipped && _inputManager.Drop) Drop();
+        if(ShouldDrop) Drop();
     }
 
     private void PickUp()
