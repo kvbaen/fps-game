@@ -9,7 +9,6 @@ public class KnifeAttack:MonoBehaviour
     public float attackRange = 2f;
     public int attackDamage = 40;
     public float timeBetweenAttack;
-    public LayerMask attackLayer;
     private float time = 0;
 
     private bool isAttacking = false;
@@ -20,7 +19,7 @@ public class KnifeAttack:MonoBehaviour
     [SerializeField] private GameObject _bulletHolePrefab;
     [SerializeField] private float knifeHoleLifeSpan = 5;
     private PlayerController playerController;
-    private bool ShouldAttack => Input.GetKeyDown(playerController.shootKey) && !isAttacking && this.gameObject.activeInHierarchy && time >= timeBetweenAttack;
+    private bool ShouldAttack => Input.GetKey(playerController.shootKey) && !isAttacking && this.gameObject.activeInHierarchy && time >= timeBetweenAttack;
     private void Awake()
     {
         playerController = GetComponentInParent<PlayerController>();

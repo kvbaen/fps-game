@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using UnityEngine.Rendering.Universal;
+
 
 namespace FpsGame.ProjectileGun
 {
@@ -16,7 +14,7 @@ namespace FpsGame.ProjectileGun
 
         //bools
         bool _shooting, _readyToShoot, _reloading;
-        private bool ShouldShoot => Input.GetKeyDown(playerController.shootKey);
+        private bool ShouldShoot => Input.GetKey(playerController.shootKey);
         private bool ShouldReload => Input.GetKeyDown(playerController.reloadKey) && _bulletsLeft < _gunData.magSize && !_reloading && this.gameObject.activeSelf;
 
         //Reference
@@ -116,14 +114,14 @@ namespace FpsGame.ProjectileGun
             //Instantiate bullet/projectile
             GameObject currentBullet = Instantiate(Bullet, AttackPoint.position, Quaternion.identity); //store instantiated bullet in currentBullet
             currentBullet.transform.forward = directionWithSpread.normalized;
-            if (Bullet.name == "cal_7_v2")
+            /*if (Bullet.name == "cal_7_v2")
             {
                 currentBullet.transform.Rotate(Vector3.right * -90);
             }
             else
             {
                 currentBullet.transform.rotation = Quaternion.LookRotation(directionWithSpread);
-            }
+            }*/
 
             //Add forces to bullet
             if (_bulletsShot == 0)

@@ -49,8 +49,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Vector3 standingCenter = new(0, 0, 0);
     private float velocity = 3.0f;
     private Vector3 vectorVelocity = new(3.0f, 0 ,0);
-
-    private Camera playerCamera;
+    [SerializeField]
+    private Transform cameraHolder;
     private CharacterController characterController;
 
     private Vector3 moveDirection;
@@ -60,7 +60,7 @@ public class PlayerController : MonoBehaviour
 
     void Awake()
     {
-        playerCamera = GetComponentInChildren<Camera>();
+        //cameraHolder = GetComponentInChildren<Transform>();
         characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -96,7 +96,7 @@ public class PlayerController : MonoBehaviour
     {
         rotationX -= Input.GetAxis("Mouse Y") * lookSpeedY;
         rotationX = Mathf.Clamp(rotationX, -upperLookLimit, lowerLookLimit);
-        playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
+        cameraHolder.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
         transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeedX, 0);
     }
 
@@ -108,7 +108,7 @@ public class PlayerController : MonoBehaviour
 
     private void HandleCrouch()
     {
-        if (Physics.Raycast(playerCamera.transform.position, Vector3.up, 1f)) 
+        if (Physics.Raycast(cameraHolder.transform.position, Vector3.up, 1f)) 
             return;
 
         float targetHeight = ShouldCrouch ? crouchingHeight : standingHeight;
