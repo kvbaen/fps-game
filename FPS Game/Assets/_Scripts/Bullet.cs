@@ -14,12 +14,13 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.tag != "Target")
+        if (other.gameObject.tag != "Target" && other.gameObject.tag != "Weapon")
         {
             ContactPoint contact = other.GetContact(0);
             GameObject bulletHole = Instantiate(_bulletHolePrefab, contact.point + contact.normal * 0.001f, Quaternion.LookRotation(contact.normal)) as GameObject;
             Destroy(bulletHole, bulletHoleLifeSpan);
         }
-        Destroy(gameObject);
+        if (other.gameObject.tag != "Weapon")
+            Destroy(gameObject);
     }
 }

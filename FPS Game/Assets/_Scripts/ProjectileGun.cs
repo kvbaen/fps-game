@@ -7,7 +7,7 @@ namespace FpsGame.ProjectileGun
     public class ProjectileGun : MonoBehaviour
     {
         public GameObject Bullet;
-        private PlayerController playerController;
+        public PlayerController playerController;
 
         //Gun stats
         int _bulletsLeft, _bulletsShot;
@@ -15,7 +15,7 @@ namespace FpsGame.ProjectileGun
         //bools
         bool _shooting, _readyToShoot, _reloading;
         private bool ShouldShoot => Input.GetKey(playerController.shootKey);
-        private bool ShouldReload => Input.GetKeyDown(playerController.reloadKey) && _bulletsLeft < _gunData.magSize && !_reloading && this.gameObject.activeSelf;
+        private bool ShouldReload => Input.GetKey(playerController.reloadKey) && _bulletsLeft < _gunData.magSize && !_reloading && this.gameObject.activeSelf;
 
         //Reference
         public Camera FpsCam;
@@ -35,7 +35,6 @@ namespace FpsGame.ProjectileGun
             //make sure magazine is full
             _bulletsLeft = _gunData.magSize;
             _readyToShoot = true;
-            playerController = GetComponentInParent<PlayerController>();
         }
 
         private void FixedUpdate()
@@ -114,14 +113,6 @@ namespace FpsGame.ProjectileGun
             //Instantiate bullet/projectile
             GameObject currentBullet = Instantiate(Bullet, AttackPoint.position, Quaternion.identity); //store instantiated bullet in currentBullet
             currentBullet.transform.forward = directionWithSpread.normalized;
-            /*if (Bullet.name == "cal_7_v2")
-            {
-                currentBullet.transform.Rotate(Vector3.right * -90);
-            }
-            else
-            {
-                currentBullet.transform.rotation = Quaternion.LookRotation(directionWithSpread);
-            }*/
 
             //Add forces to bullet
             if (_bulletsShot == 0)

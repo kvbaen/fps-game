@@ -12,10 +12,10 @@ public class WeaponSwitching : MonoBehaviour
     [SerializeField] private int selectedWeapon;
 
     private float timeSinceLastSwitch;
-    private bool ShouldSwitchToFirstGun => Input.GetKeyDown(playerController.switchToFirstGunKey) && timeSinceLastSwitch >= switchTime;
-    private bool ShouldSwitchToSecondGun => Input.GetKeyDown(playerController.switchToSecondGunKey) && timeSinceLastSwitch >= switchTime;
-    private bool ShouldSwitchToKnife => Input.GetKeyDown(playerController.switchToKnifeKey) && timeSinceLastSwitch >= switchTime;
-    private bool ShouldSwitchToGranade => Input.GetKeyDown(playerController.switchToGranadeKey) && timeSinceLastSwitch >= switchTime;
+    private bool ShouldSwitchToFirstGun => Input.GetKey(playerController.switchToFirstGunKey) && timeSinceLastSwitch >= switchTime;
+    private bool ShouldSwitchToSecondGun => Input.GetKey(playerController.switchToSecondGunKey) && timeSinceLastSwitch >= switchTime;
+    private bool ShouldSwitchToKnife => Input.GetKey(playerController.switchToKnifeKey) && timeSinceLastSwitch >= switchTime;
+    private bool ShouldSwitchToGranade => Input.GetKey(playerController.switchToGranadeKey) && timeSinceLastSwitch >= switchTime;
     private PlayerController playerController;
     private void Awake()
     {
@@ -28,7 +28,7 @@ public class WeaponSwitching : MonoBehaviour
         timeSinceLastSwitch = 0f;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         int previousSelectedWeapon = selectedWeapon;
         if (ShouldSwitchToFirstGun)

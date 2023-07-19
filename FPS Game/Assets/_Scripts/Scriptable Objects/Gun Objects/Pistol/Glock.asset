@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7493e4e85cb1b744c9a0bc4cafed4105, type: 3}
   m_Name: Glock
   m_EditorClassIdentifier: 
-  name: PT-9M
+  name: Glock
   damage: 15
   maxDistance: 500
   allowButtonHold: 0

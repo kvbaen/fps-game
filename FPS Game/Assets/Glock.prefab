@@ -93,9 +93,9 @@ GameObject:
   m_Component:
   - component: {fileID: 5738456080911321149}
   - component: {fileID: 8752697796476076543}
+  - component: {fileID: 468100457046891770}
   - component: {fileID: -8320852472448895552}
   - component: {fileID: 7231183771010622452}
-  - component: {fileID: 468100457046891770}
   m_Layer: 0
   m_Name: Glock
   m_TagString: Untagged
@@ -136,6 +136,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Bullet: {fileID: 0}
+  playerController: {fileID: 0}
   FpsCam: {fileID: 0}
   AttackPoint: {fileID: 0}
   _gunData: {fileID: 0}
@@ -143,6 +144,27 @@ MonoBehaviour:
   MuzzleFlash: {fileID: 0}
   AmmunitionDisplay: {fileID: 0}
   AllowInvoke: 1
+--- !u!65 &468100457046891770
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4965438261709640327}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.03, y: 0.16, z: 0.24}
+  m_Center: {x: 0, y: 0.015, z: 0.07}
 --- !u!54 &-8320852472448895552
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -182,37 +204,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c23dd1dcd1401da44bb99d60db235316, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gunScript: {fileID: 0}
-  rb: {fileID: 0}
-  coll: {fileID: 0}
-  player: {fileID: 0}
   gunContainer: {fileID: 0}
   fpsCam: {fileID: 0}
   pickUpRange: 4
   dropForwardForce: 15
   dropUpwardForce: 7
   equipped: 0
---- !u!65 &468100457046891770
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4965438261709640327}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.03, y: 0.17, z: 0.25}
-  m_Center: {x: 0, y: 0.015, z: 0.07}
+  playerController: {fileID: 0}
 --- !u!1 &5023612517563858623
 GameObject:
   m_ObjectHideFlags: 0
@@ -237,7 +235,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5023612517563858623}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.077, z: 0.191}
+  m_LocalPosition: {x: 0, y: 0.077, z: 0.1973}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

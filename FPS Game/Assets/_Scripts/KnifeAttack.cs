@@ -25,7 +25,7 @@ public class KnifeAttack:MonoBehaviour
         playerController = GetComponentInParent<PlayerController>();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (ShouldAttack)
         {
