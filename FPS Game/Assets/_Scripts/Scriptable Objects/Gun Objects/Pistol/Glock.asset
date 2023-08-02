@@ -15,16 +15,33 @@ MonoBehaviour:
   name: Glock
   damage: 15
   maxDistance: 500
-  allowButtonHold: 0
-  spread: 0.05
-  timeBetweenShooting: 0.3
-  timeBetweenShots: 0
-  bulletsPerTap: 1
-  recoilForce: 0.1
-  fireRate: 1
-  shootForce: 50
-  upwardForce: 0
+  isAutomatic: 0
+  timeBetweenShots: 0.25
+  timeBetweenMultipleShots: 0
+  recoilPattern:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  recoilResetTime: 0.4
+  spread: 0.1
+  shootForce: 35
   currentAmmo: 20
   magSize: 20
   reloadTime: 1
-  reloading: 0

@@ -25,7 +25,7 @@ public class KnifeAttack:MonoBehaviour
         playerController = GetComponentInParent<PlayerController>();
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         if (ShouldAttack)
         {
@@ -50,7 +50,7 @@ public class KnifeAttack:MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, attackRange))
         {
-            if (hit.collider.gameObject.tag == EnemyTag)
+            if (hit.collider.gameObject.CompareTag(EnemyTag))
             {
                 IDamageable damageable = hit.transform.GetComponent<IDamageable>();
                 if (damageable != null)
@@ -58,12 +58,12 @@ public class KnifeAttack:MonoBehaviour
                     damageable?.TakeDamage(attackDamage);
                 }
             }
-            else if(hit.collider.gameObject.tag != "Weapon") 
+            else if(!hit.collider.gameObject.CompareTag("Weapon")) 
             {
                 GameObject knifeHole = Instantiate(_bulletHolePrefab, hit.point + hit.normal * 0.001f, Quaternion.LookRotation(hit.normal)) as GameObject;
                 Destroy(knifeHole, knifeHoleLifeSpan);
             }
-            if(hit.collider.gameObject.tag == "Weapon")
+            if (hit.collider.gameObject.CompareTag("Weapon"))
             {
                 Rigidbody gunRB = hit.collider.gameObject.GetComponent<Rigidbody>();
                 if (gunRB != null)

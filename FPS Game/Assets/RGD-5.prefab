@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4483550468885945508}
   - component: {fileID: 4995579250270502568}
   - component: {fileID: 7041415731176103677}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Pin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 5067417719824666522}
   - component: {fileID: 3163358807880322323}
   - component: {fileID: 2112085373133161163}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -182,9 +182,9 @@ GameObject:
   - component: {fileID: 347771450447471090}
   - component: {fileID: 4003508100242687141}
   - component: {fileID: 320025718699532436}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RGD-5
-  m_TagString: Untagged
+  m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -317,11 +317,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f90d2580c6c91b049a7cb4bdf578321d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  delay: 3
+  delay: 2
   radius: 5
   explosionForce: 700
-  damage: 0
-  explosionEffect: {fileID: 100008, guid: 7075bd5fe1480184695a32611c15da57, type: 3}
+  damage: 60
+  explosionEffect: {fileID: 100004, guid: b46890100828db6429ff69c322b45893, type: 3}
   beenThrown: 0
 --- !u!114 &320025718699532436
 MonoBehaviour:

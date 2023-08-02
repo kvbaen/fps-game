@@ -16,6 +16,8 @@ public class WeaponSwitching : MonoBehaviour
     private bool ShouldSwitchToSecondGun => Input.GetKey(playerController.switchToSecondGunKey) && timeSinceLastSwitch >= switchTime;
     private bool ShouldSwitchToKnife => Input.GetKey(playerController.switchToKnifeKey) && timeSinceLastSwitch >= switchTime;
     private bool ShouldSwitchToGranade => Input.GetKey(playerController.switchToGranadeKey) && timeSinceLastSwitch >= switchTime;
+    private bool ShouldSwitchToNextWeapon => Input.mouseScrollDelta.y < 0;
+    private bool ShouldSwitchToPreviousWeapon => Input.mouseScrollDelta.y > 0;
     private PlayerController playerController;
     private void Awake()
     {
@@ -28,7 +30,7 @@ public class WeaponSwitching : MonoBehaviour
         timeSinceLastSwitch = 0f;
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         int previousSelectedWeapon = selectedWeapon;
         if (ShouldSwitchToFirstGun)
@@ -50,7 +52,28 @@ public class WeaponSwitching : MonoBehaviour
         {
             selectedWeapon = 3;
         }
-
+        if (ShouldSwitchToNextWeapon)
+        {
+            if(selectedWeapon + 1 > 3)
+            {
+                selectedWeapon = 0;
+            }
+            else
+            {
+                selectedWeapon++;
+            }
+        }
+        else if(ShouldSwitchToPreviousWeapon) 
+        {
+            if (selectedWeapon - 1 < 0)
+            {
+                selectedWeapon = 3;
+            }
+            else
+            {
+                selectedWeapon--; ;
+            }
+        }
         if (previousSelectedWeapon != selectedWeapon)
         {
             Select(selectedWeapon);

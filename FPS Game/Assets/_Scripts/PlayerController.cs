@@ -6,6 +6,7 @@ public class PlayerController : MonoBehaviour
 {
     public bool CanMove { get; private set; } = true;
     private bool IsSprinting => canSprint && Input.GetKey(sprintKey);
+    public bool IsMovingOrJumping => currentInput != Vector2.zero || !characterController.isGrounded;
     private bool ShouldJump => Input.GetKeyDown(jumpKey) && characterController.isGrounded;
     private bool ShouldCrouch => Input.GetKey(crouchKey);
 
@@ -49,9 +50,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Vector3 standingCenter = new(0, 0, 0);
     private float velocity = 3.0f;
     private Vector3 vectorVelocity = new(3.0f, 0 ,0);
+    public Vector3 gunRotation = Vector3.zero;
     [SerializeField]
     private Transform cameraHolder;
+    public Transform gunHolder;
     private CharacterController characterController;
+    [SerializeField]
+    private Camera _mainCamera;
 
     private Vector3 moveDirection;
     private Vector2 currentInput;
@@ -60,7 +65,6 @@ public class PlayerController : MonoBehaviour
 
     void Awake()
     {
-        //cameraHolder = GetComponentInChildren<Transform>();
         characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -96,7 +100,18 @@ public class PlayerController : MonoBehaviour
     {
         rotationX -= Input.GetAxis("Mouse Y") * lookSpeedY;
         rotationX = Mathf.Clamp(rotationX, -upperLookLimit, lowerLookLimit);
-        cameraHolder.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
+        if(gunRotation != Vector3.zero && !IsMovingOrJumping)
+        {
+            cameraHolder.transform.localRotation = Quaternion.Euler(
+                rotationX + gunRotation.x / 1.2f,
+                gunRotation.y / 1.2f,
+                gunRotation.z / 1.2f
+                );
+        }
+        else
+        {
+            cameraHolder.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
+        }
         transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeedX, 0);
     }
 
@@ -127,6 +142,12 @@ public class PlayerController : MonoBehaviour
             moveDirection.y -= gravity * Time.deltaTime;
 
         characterController.Move(moveDirection * Time.deltaTime);
+    }
+
+    public void SetGunRotation(Vector3 _gunRotation)
+    {
+        gunRotation = _gunRotation;
+        gunHolder.localRotation = Quaternion.Euler(gunRotation);
     }
 }
 

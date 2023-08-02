@@ -1,185 +1,219 @@
 using UnityEngine;
 using TMPro;
-
+using static UnityEngine.GraphicsBuffer;
 
 namespace FpsGame.ProjectileGun
 {
     public class ProjectileGun : MonoBehaviour
     {
-        public GameObject Bullet;
+        public GameObject bulletPrefab;
         public PlayerController playerController;
+        public GameObject hitPrefab;
+        // Gun stats
+        private int bulletsLeftInMagazine, bulletsShot;
 
-        //Gun stats
-        int _bulletsLeft, _bulletsShot;
-
-        //bools
-        bool _shooting, _readyToShoot, _reloading;
+        // Flags
+        private bool isShooting, isReadyToShoot, isReloading;
         private bool ShouldShoot => Input.GetKey(playerController.shootKey);
-        private bool ShouldReload => Input.GetKey(playerController.reloadKey) && _bulletsLeft < _gunData.magSize && !_reloading && this.gameObject.activeSelf;
+        private bool ShouldShootOnClick => Input.GetKeyDown(playerController.shootKey);
+        private bool ShouldReload => Input.GetKey(playerController.reloadKey) && bulletsLeftInMagazine < gunData.magSize && !isReloading && gameObject.activeSelf;
 
-        //Reference
-        public Camera FpsCam;
-        public Transform AttackPoint;
-        [SerializeField] private GunData _gunData;
-        [SerializeField] private string EnemyTag;
+        // References
+        public Camera fpsCam;
+        public Transform attackPoint;
+        [SerializeField] private GunData gunData;
+        [SerializeField] private string enemyTag;
 
-        //Graphics
-        public ParticleSystem MuzzleFlash;
-        public TextMeshProUGUI AmmunitionDisplay;
+        // Graphics
+        public ParticleSystem muzzleFlash;
+        public TextMeshProUGUI ammunitionDisplay;
 
-        //bug fixing :D
-        public bool AllowInvoke = true;
-        float time = 0;
+        private bool allowInvoke = true;
+        private float time = 0;
+        private bool spawnBullet = false;
+        private Vector3 walkSpread = Vector3.zero;
+        private Vector3 targetPoint;
         private void Awake()
         {
-            //make sure magazine is full
-            _bulletsLeft = _gunData.magSize;
-            _readyToShoot = true;
+            bulletsLeftInMagazine = gunData.magSize;
+            isReadyToShoot = true;
         }
-
         private void FixedUpdate()
         {
-            MyInput();
-
-            //Set ammo display, if it exists :D
-            if (AmmunitionDisplay != null)
+            if(spawnBullet)
             {
-                AmmunitionDisplay.enabled = true;
-                AmmunitionDisplay.SetText(_bulletsLeft / _gunData.bulletsPerTap + " / " + _gunData.magSize / _gunData.bulletsPerTap);
+                SpawnBullet();
             }
         }
-        private void MyInput()
+        private void Update()
         {
-            //Check if allowed to hold down button and take corresponding input
-            if (time > _gunData.timeBetweenShooting)
+            HandleInput();
+
+            if (ammunitionDisplay != null)
             {
-                if (_gunData.allowButtonHold) _shooting = ShouldShoot;
-                else
-                {
-                    if (_bulletsShot == 0)
-                    {
-                        _shooting = ShouldShoot;
-                        _readyToShoot = true;
-                    }
-                }
+                ammunitionDisplay.enabled = true;
+                ammunitionDisplay.SetText(bulletsLeftInMagazine + " / " + gunData.magSize);
             }
-            //Reloading
-            if (!ShouldShoot) { _bulletsShot = 0; }
+            if (playerController.IsMovingOrJumping)
+            {
+                walkSpread = new Vector3(Random.Range(-gunData.spread * 10f, gunData.spread * 10f), Random.Range(-gunData.spread * 10f, gunData.spread * 10f), 0);
+            }
+            else
+            {
+                walkSpread = Vector3.zero;
+            }
+        }
 
-            if (ShouldReload) Reload();
-            //Reload automatically when trying to shoot without ammo
-            if (_readyToShoot && _shooting && !_reloading && _bulletsLeft <= 0 && this.gameObject.activeSelf) Reload();
+        private void HandleInput()
+        {
+            if (gunData.isAutomatic)
+                isShooting = ShouldShoot;
+            else
+            {
+                isShooting = ShouldShootOnClick;
+            }
 
-            //Shooting
-            if (_readyToShoot && _shooting && !_reloading && _bulletsLeft > 0 && this.gameObject.activeSelf)
+            if (ShouldReload || bulletsLeftInMagazine == 0) Reload();
+
+            if (isReadyToShoot && isShooting && !isReloading && bulletsLeftInMagazine > 0 && gameObject.activeSelf)
             {
                 Shoot();
-                time = 0;
+            }
+            if(!isShooting && time >= gunData.recoilResetTime)
+            {
+                bulletsShot = 0;
+            }
+            if (!isShooting || bulletsLeftInMagazine == 0)
+            {
+                playerController.SetGunRotation(
+                    Vector3.Lerp(
+                        playerController.gunRotation,
+                        Vector3.zero,
+                        (gunData.timeBetweenShots * 10f) * Time.deltaTime
+                    )
+                );
             }
             time += Time.smoothDeltaTime;
         }
 
         private void Shoot()
         {
-            _readyToShoot = false;
-            //Find the exact hit position using a raycast
-            Ray ray = FpsCam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0)); //Just a ray through the middle of your current view
+            isReadyToShoot = false;
+            Ray ray;
+            if (playerController.IsMovingOrJumping) {
+                ray = fpsCam.ViewportPointToRay(new Vector3(Random.Range(0.5f - gunData.spread, 0.5f + gunData.spread), Random.Range(0.5f - gunData.spread, 0.5f + gunData.spread), 0));
+            }
+            else
+            {
+                ray = fpsCam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+                HandleGunRecoil();
+            }
+            
             RaycastHit hit;
 
-            //check if ray hits something
-            Vector3 targetPoint;
             if (Physics.Raycast(ray, out hit))
             {
                 targetPoint = hit.point;
-                if (hit.collider.gameObject.tag == EnemyTag)
+
+                if (hit.collider.gameObject.CompareTag(enemyTag))
                 {
                     IDamageable damageable = hit.transform.GetComponent<IDamageable>();
-                    damageable?.TakeDamage(_gunData.damage);
+                    damageable?.TakeDamage(gunData.damage);
                 }
-            }
-            else
-                targetPoint = ray.GetPoint(_gunData.maxDistance); //Just a point far away from the player
-
-            //Calculate direction from attackPoint to targetPoint
-            Vector3 directionWithoutSpread = targetPoint - AttackPoint.position;
-
-            //Calculate spread
-            float x = Random.Range(-_gunData.spread, _gunData.spread);
-            float y = Random.Range(-_gunData.spread, _gunData.spread);
-
-            //Calculate new direction with spread
-            Vector3 directionWithSpread = directionWithoutSpread + new Vector3(x, y, 0); //Just add spread to last direction
-
-            //Instantiate bullet/projectile
-            GameObject currentBullet = Instantiate(Bullet, AttackPoint.position, Quaternion.identity); //store instantiated bullet in currentBullet
-            currentBullet.transform.forward = directionWithSpread.normalized;
-
-            //Add forces to bullet
-            if (_bulletsShot == 0)
-            {
-                currentBullet.GetComponent<Rigidbody>().AddForce(directionWithoutSpread.normalized * _gunData.shootForce, ForceMode.Impulse);
+                GameObject hitPoint = Instantiate(hitPrefab, targetPoint, Quaternion.identity);
+                Destroy(hitPoint, 5);
             }
             else
             {
-                currentBullet.GetComponent<Rigidbody>().AddForce(directionWithSpread.normalized * _gunData.shootForce, ForceMode.Impulse);
+                targetPoint = ray.GetPoint(gunData.maxDistance);
             }
-            currentBullet.GetComponent<Rigidbody>().AddForce(FpsCam.transform.up * _gunData.upwardForce, ForceMode.Impulse);
 
-            //Instantiate muzzle flash, if you have one
-            if (MuzzleFlash != null)
+            Vector3 directionWithoutSpread = targetPoint - attackPoint.position;
+            
+            spawnBullet = true;
+
+            if (muzzleFlash != null)
             {
-                ParticleSystem currentMuzzleFlash = Instantiate(MuzzleFlash, AttackPoint.position, Quaternion.identity);
-                currentMuzzleFlash.transform.forward = directionWithSpread.normalized;
+                ParticleSystem currentMuzzleFlash = Instantiate(muzzleFlash, attackPoint.position, Quaternion.identity);
+                currentMuzzleFlash.transform.forward = directionWithoutSpread.normalized;
             }
-            _bulletsLeft--;
-            _bulletsShot++;
 
+            bulletsLeftInMagazine--;
 
-            //Invoke resetShot function (if not already invoked), with your timeBetweenShooting
-            if (AllowInvoke && this.gameObject.activeInHierarchy)
+            if (allowInvoke && gameObject.activeInHierarchy)
             {
-                if (_gunData.allowButtonHold)
-                {
-                    Invoke("ResetShot", _gunData.timeBetweenShooting);
-                    AllowInvoke = false;
-                }
-                //Add recoil to player (should only be called once)
-                //PlayerRb.AddForce(-directionWithSpread.normalized * _gunData.recoilForce, ForceMode.Impulse);
+                Invoke("ResetShot", gunData.timeBetweenShots);
+                allowInvoke = false;
             }
-
-            //if more than one bulletsPerTap make sure to repeat shoot function
-            if (_bulletsShot < _gunData.bulletsPerTap && _bulletsLeft > 0 && this.gameObject.activeInHierarchy)
-            {
-                Invoke("Shoot", _gunData.timeBetweenShots);
-            }
-
         }
+
         private void ResetShot()
         {
-            //Allow shooting and invoking again
-            _readyToShoot = true;
-            AllowInvoke = true;
+            isReadyToShoot = true;
+            allowInvoke = true;
+            time = 0;
         }
 
-        private void OnDisable() => _reloading = false; 
-        private void Reload()
+        private void HandleGunRecoil()
         {
-           _reloading = true;
-           Invoke("ReloadFinished", _gunData.reloadTime); //Invoke ReloadFinished function with your reloadTime as delay
-            
-        }
-        private void ReloadFinished()
-        {
-            if (this.gameObject.activeInHierarchy && _reloading)
+            if (time >= gunData.recoilResetTime)
             {
-                //Fill magazine
-                _bulletsLeft = _gunData.magSize;
-                _reloading = false;
+                playerController.SetGunRotation(playerController.gunRotation + gunData.recoilPattern[0]);
+                bulletsShot = 1;
             }
             else
             {
-                _reloading = false;
+                Vector3 newRotation = playerController.gunRotation + new Vector3(
+                        gunData.recoilPattern[bulletsShot].x != 0 ? gunData.recoilPattern[bulletsShot].x : Random.Range(-gunData.spread * 3, gunData.spread * 3),
+                        gunData.recoilPattern[bulletsShot].y != 0 ? gunData.recoilPattern[bulletsShot].y : Random.Range(-gunData.spread * 3, gunData.spread * 3),
+                        gunData.recoilPattern[bulletsShot].z)
+                    + walkSpread;
+                playerController.SetGunRotation(newRotation);
+
+                if (bulletsShot + 1 <= gunData.recoilPattern.Length - 1)
+                {
+                    bulletsShot++;
+                }
+                else
+                {
+                    bulletsShot = 0;
+                }
             }
+        }
+
+        private void OnDisable()
+        {
+            isReloading = false;
+        }
+
+        private void Reload()
+        {
+            isReloading = true;
+            Invoke("ReloadFinished", gunData.reloadTime);
+        }
+
+        private void ReloadFinished()
+        {
+            if (gameObject.activeInHierarchy && isReloading)
+            {
+                bulletsLeftInMagazine = gunData.magSize;
+                bulletsShot = 0;
+                isReloading = false;
+            }
+            else
+            {
+                isReloading = false;
+            }
+        }
+        private void SpawnBullet()
+        {
+            GameObject currentBullet = Instantiate(bulletPrefab, attackPoint.position, Quaternion.identity);
+            if (currentBullet != null)
+            {
+                currentBullet.transform.LookAt(targetPoint);
+                currentBullet.GetComponent<Rigidbody>().AddForce(currentBullet.transform.forward * gunData.shootForce, ForceMode.Impulse);
+            }
+            spawnBullet = false;
         }
     }
 }

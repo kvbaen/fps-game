@@ -15,16 +15,43 @@ MonoBehaviour:
   name: AK-47
   damage: 32
   maxDistance: 600
-  allowButtonHold: 1
-  spread: 0.15
-  timeBetweenShooting: 0.2
+  isAutomatic: 1
   timeBetweenShots: 0.1
-  bulletsPerTap: 1
-  recoilForce: 1
-  fireRate: 900
-  shootForce: 70
-  upwardForce: 0
+  timeBetweenMultipleShots: 0
+  recoilPattern:
+  - {x: 0, y: 0, z: 0}
+  - {x: -0.5, y: 0, z: 0}
+  - {x: -0.8, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 0}
+  recoilResetTime: 0.75
+  spread: 0.2
+  shootForce: 45
   currentAmmo: 30
   magSize: 30
   reloadTime: 1.5
-  reloading: 0

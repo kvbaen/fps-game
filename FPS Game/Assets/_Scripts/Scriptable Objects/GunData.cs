@@ -11,20 +11,16 @@ public class GunData : ScriptableObject
     [Header("Shooting")]
     public float damage;
     public float maxDistance;
-    public bool allowButtonHold;
+    public bool isAutomatic;
+    public float timeBetweenShots, timeBetweenMultipleShots;
+    public Vector3[] recoilPattern;
+    public float recoilResetTime;
     public float spread;
-    public float timeBetweenShooting, timeBetweenShots;
-    public int  bulletsPerTap;
-    public float recoilForce;
-    public float fireRate;
     [Header("Bullet")]
-    public float shootForce, upwardForce;
+    public float shootForce;
 
     [Header("Reloading")]
     public int currentAmmo;
     public int magSize;
     public float reloadTime;
-    
-    [HideInInspector]
-    public bool reloading;
 }

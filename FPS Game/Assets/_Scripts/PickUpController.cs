@@ -38,13 +38,8 @@ public class PickUpController : MonoBehaviour
     }
 
     
-    void FixedUpdate()
+    void Update()
     {
-        /*if (equipped)
-        {
-            transform.localPosition = new Vector3(0, 0, 0);
-            transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
-        }*/
         Vector3 distanceToPlayer = playerController.transform.position - transform.position;
         if (ShouldPickUp && distanceToPlayer.magnitude <= pickUpRange)
         {
@@ -77,7 +72,7 @@ public class PickUpController : MonoBehaviour
         transform.SetParent(gunContainer.transform);
         transform.localPosition = Vector3.zero;
         transform.localRotation = Quaternion.Euler(Vector3.zero);
-
+        gunContainer.SlotFull = gunContainer.transform.childCount >= gunContainer.maxCountItems;
         /*transform.localScale = Vector3.one;*/
         rb.interpolation = RigidbodyInterpolation.None;
         rb.isKinematic = true;

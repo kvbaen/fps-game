@@ -7,20 +7,36 @@ public class Bullet : MonoBehaviour
 {
     [SerializeField] private GameObject _bulletHolePrefab;
     [SerializeField] private float bulletHoleLifeSpan;
+    private Rigidbody rb;
     void Start()
     {
-        Destroy(gameObject, 20f);
-    }
+        Destroy(gameObject, 5f);
+        rb = GetComponent<Rigidbody>();
 
-    private void OnCollisionEnter(Collision other)
+    }
+    private void Update()
     {
-        if (other.gameObject.tag != "Target" && other.gameObject.tag != "Weapon")
+        if (rb.velocity != Vector3.zero)
         {
-            ContactPoint contact = other.GetContact(0);
+            Quaternion targetRotation = Quaternion.LookRotation(rb.velocity.normalized);
+            transform.rotation = targetRotation;
+        }
+    }
+    private void OnCollisionEnter(Collision collElement)
+    {        
+        if (!collElement.gameObject.CompareTag("Target") && !collElement.gameObject.CompareTag("Weapon"))
+        {
+            ContactPoint contact = collElement.GetContact(0);
             GameObject bulletHole = Instantiate(_bulletHolePrefab, contact.point + contact.normal * 0.001f, Quaternion.LookRotation(contact.normal)) as GameObject;
             Destroy(bulletHole, bulletHoleLifeSpan);
         }
-        if (other.gameObject.tag != "Weapon")
+        if (collElement.gameObject.CompareTag("Weapon") && collElement.gameObject.GetComponent<PickUpController>().equipped)
+        {
+            return;
+        }
+        else
+        {
             Destroy(gameObject);
+        }
     }
 }
