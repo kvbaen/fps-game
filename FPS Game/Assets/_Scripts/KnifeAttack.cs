@@ -2,9 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Burst.CompilerServices;
 using UnityEngine;
 
-public class KnifeAttack:MonoBehaviour
+public class KnifeAttack : MonoBehaviour
 {
     public float attackRange = 2f;
     public int attackDamage = 40;
@@ -18,11 +19,13 @@ public class KnifeAttack:MonoBehaviour
     [SerializeField] private string EnemyTag;
     [SerializeField] private GameObject _bulletHolePrefab;
     [SerializeField] private float knifeHoleLifeSpan = 5;
+    private Animator animator;
     private PlayerController playerController;
     private bool ShouldAttack => Input.GetKey(playerController.shootKey) && !isAttacking && this.gameObject.activeInHierarchy && time >= timeBetweenAttack;
     private void Awake()
     {
         playerController = GetComponentInParent<PlayerController>();
+        animator = GetComponent<Animator>();
     }
 
     private void Update()
@@ -45,22 +48,21 @@ public class KnifeAttack:MonoBehaviour
 
     private void PerformAttack()
     {
+        animator.SetTrigger("Attack");
         Ray ray = _fpsCam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0)); //Just a ray through the middle of your current view
         RaycastHit hit;
 
         if (Physics.Raycast(ray, out hit, attackRange))
         {
-            if (hit.collider.gameObject.CompareTag(EnemyTag))
+            Target damageable = hit.transform.GetComponentInParent<Target>();
+            if (damageable != null)
             {
-                IDamageable damageable = hit.transform.GetComponent<IDamageable>();
-                if (damageable != null)
-                {
-                    damageable?.TakeDamage(attackDamage);
-                }
+                damageable?.TakeDamage(attackDamage);
             }
-            else if(!hit.collider.gameObject.CompareTag("Weapon")) 
+            if (!hit.collider.gameObject.CompareTag("Weapon") && !hit.collider.gameObject.CompareTag("Target"))
             {
                 GameObject knifeHole = Instantiate(_bulletHolePrefab, hit.point + hit.normal * 0.001f, Quaternion.LookRotation(hit.normal)) as GameObject;
+                knifeHole.transform.parent = hit.transform;
                 Destroy(knifeHole, knifeHoleLifeSpan);
             }
             if (hit.collider.gameObject.CompareTag("Weapon"))
@@ -70,12 +72,11 @@ public class KnifeAttack:MonoBehaviour
                 {
                     gunRB.AddForce(_fpsCam.transform.forward * 5, ForceMode.Impulse);
                 }
-                
+
             }
         }
         FinishAttack();
     }
-
     public void FinishAttack()
     {
         isAttacking = false;

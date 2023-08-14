@@ -23,11 +23,12 @@ public class Bullet : MonoBehaviour
         }
     }
     private void OnCollisionEnter(Collision collElement)
-    {        
+    {
         if (!collElement.gameObject.CompareTag("Target") && !collElement.gameObject.CompareTag("Weapon"))
         {
             ContactPoint contact = collElement.GetContact(0);
             GameObject bulletHole = Instantiate(_bulletHolePrefab, contact.point + contact.normal * 0.001f, Quaternion.LookRotation(contact.normal)) as GameObject;
+            bulletHole.transform.parent = collElement.transform;
             Destroy(bulletHole, bulletHoleLifeSpan);
         }
         if (collElement.gameObject.CompareTag("Weapon") && collElement.gameObject.GetComponent<PickUpController>().equipped)

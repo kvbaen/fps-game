@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8206211486135022083}
   - component: {fileID: 5935840076717003152}
   - component: {fileID: 895577984911546450}
+  - component: {fileID: -5603984097404787611}
   m_Layer: 6
   m_Name: AK74
   m_TagString: Weapon
@@ -69,15 +70,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30a9c24cf27e8f64a94b8fd8e97485f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Bullet: {fileID: 5721009653035204392, guid: d8d0138d453350347817e11727ba5de2, type: 3}
+  fpsCam: {fileID: 0}
+  attackPoint: {fileID: 0}
+  bulletPrefab: {fileID: 0}
   playerController: {fileID: 0}
-  FpsCam: {fileID: 0}
-  AttackPoint: {fileID: 481956738619699168}
-  _gunData: {fileID: 11400000, guid: c1248c3802121e74f801f8c11451d9b0, type: 2}
-  EnemyTag: Target
-  MuzzleFlash: {fileID: 4718016865740376536, guid: 22bf9c9c63b42634c8f0a4d6b385a974, type: 3}
-  AmmunitionDisplay: {fileID: 0}
-  AllowInvoke: 1
+  hitPrefab: {fileID: 0}
+  gunData: {fileID: 0}
+  enemyTag: 
+  muzzleFlash: {fileID: 0}
+  ammunitionDisplay: {fileID: 0}
 --- !u!54 &5935840076717003152
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -119,11 +120,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gunContainer: {fileID: 0}
   fpsCam: {fileID: 0}
-  pickUpRange: 2
+  pickUpRange: 3
   dropForwardForce: 15
   dropUpwardForce: 7
   equipped: 0
   playerController: {fileID: 0}
+--- !u!95 &-5603984097404787611
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6304038325188918297}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: b0fe73f77346e6d419212c7dca56a167, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &532549924889410746
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -191,11 +213,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 024a0da9e47d982418153f82f9260a95, type: 3}
---- !u!4 &481956738619699168 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 131658049373459290, guid: 024a0da9e47d982418153f82f9260a95, type: 3}
-  m_PrefabInstance: {fileID: 532549924889410746}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4883338694265466997 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4946894122342239439, guid: 024a0da9e47d982418153f82f9260a95, type: 3}

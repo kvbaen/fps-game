@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class WeaponSwitching : MonoBehaviour
 {
-    [Header("References")] 
+    [Header("References")]
     [SerializeField] private Transform[] weapons;
 
     [Header("Settings")]
@@ -54,7 +54,7 @@ public class WeaponSwitching : MonoBehaviour
         }
         if (ShouldSwitchToNextWeapon)
         {
-            if(selectedWeapon + 1 > 3)
+            if (selectedWeapon + 1 > 3)
             {
                 selectedWeapon = 0;
             }
@@ -63,7 +63,7 @@ public class WeaponSwitching : MonoBehaviour
                 selectedWeapon++;
             }
         }
-        else if(ShouldSwitchToPreviousWeapon) 
+        else if (ShouldSwitchToPreviousWeapon)
         {
             if (selectedWeapon - 1 < 0)
             {
@@ -86,8 +86,8 @@ public class WeaponSwitching : MonoBehaviour
     private void SetWeapon()
     {
         weapons = new Transform[transform.childCount];
-        
-        for(int i = 0; i < transform.childCount; i++)
+
+        for (int i = 0; i < transform.childCount; i++)
         {
             weapons[i] = transform.GetChild(i);
         }
@@ -95,7 +95,7 @@ public class WeaponSwitching : MonoBehaviour
 
     private void Select(int weaponIndex)
     {
-        for(int i = 0; i < weapons.Length; i++)
+        for (int i = 0; i < weapons.Length; i++)
         {
             weapons[i].gameObject.SetActive(i == weaponIndex);
         }

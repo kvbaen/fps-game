@@ -8,6 +8,6 @@ public class Target : MonoBehaviour, IDamageable
     public void TakeDamage(float damage)
     {
         health -= damage;
-        if(health <= 0) Destroy(gameObject);
+        if (health <= 0) Destroy(gameObject);
     }
 }

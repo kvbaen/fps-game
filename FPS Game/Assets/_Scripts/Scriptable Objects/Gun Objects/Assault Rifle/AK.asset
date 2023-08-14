@@ -16,41 +16,42 @@ MonoBehaviour:
   damage: 32
   maxDistance: 600
   isAutomatic: 1
-  timeBetweenShots: 0.1
+  timeBetweenShots: 0.25
   timeBetweenMultipleShots: 0
   recoilPattern:
   - {x: 0, y: 0, z: 0}
+  - {x: -0.25, y: 0, z: 0}
   - {x: -0.5, y: 0, z: 0}
   - {x: -0.8, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
+  - {x: -1.5, y: 0, z: 0}
+  - {x: -2.2, y: 0, z: 0}
+  - {x: -3, y: 0, z: 0}
+  - {x: -3.6, y: 0, z: 0}
+  - {x: -4.5, y: 0, z: 0}
+  - {x: -0.5, y: -1, z: 0}
+  - {x: 0, y: -2, z: 0}
+  - {x: 0, y: -1, z: 0}
+  - {x: 0, y: -4, z: 0}
+  - {x: 0, y: -3, z: 0}
+  - {x: 0, y: -4, z: 0}
+  - {x: 0, y: -2, z: 0}
+  - {x: 0, y: -1, z: 0}
+  - {x: 0, y: 2, z: 0}
+  - {x: 0, y: 2.5, z: 0}
+  - {x: 0, y: 4, z: 0}
+  - {x: 0, y: 3, z: 0}
+  - {x: 0, y: 1, z: 0}
+  - {x: 0, y: 5, z: 0}
+  - {x: 0, y: 4, z: 0}
+  - {x: 0, y: 2, z: 0}
+  - {x: 0, y: 3, z: 0}
+  - {x: 1, y: -1, z: 0}
+  - {x: 2, y: -3, z: 0}
+  - {x: 0, y: -4, z: 0}
+  - {x: 0, y: -1, z: 0}
   recoilResetTime: 0.75
   spread: 0.2
+  headDamageMultiplier: 4
   shootForce: 45
   currentAmmo: 30
   magSize: 30

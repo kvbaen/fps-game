@@ -6,14 +6,11 @@ namespace FpsGame.ProjectileGun
 {
     public class ProjectileGun : MonoBehaviour
     {
-        public GameObject bulletPrefab;
-        public PlayerController playerController;
-        public GameObject hitPrefab;
         // Gun stats
         private int bulletsLeftInMagazine, bulletsShot;
 
         // Flags
-        private bool isShooting, isReadyToShoot, isReloading;
+        private bool isShooting = false, isReadyToShoot = false, isReloading;
         private bool ShouldShoot => Input.GetKey(playerController.shootKey);
         private bool ShouldShootOnClick => Input.GetKeyDown(playerController.shootKey);
         private bool ShouldReload => Input.GetKey(playerController.reloadKey) && bulletsLeftInMagazine < gunData.magSize && !isReloading && gameObject.activeSelf;
@@ -21,6 +18,10 @@ namespace FpsGame.ProjectileGun
         // References
         public Camera fpsCam;
         public Transform attackPoint;
+        public GameObject bulletPrefab;
+        public PlayerController playerController;
+        public GameObject hitPrefab;
+        private Animator animator;
         [SerializeField] private GunData gunData;
         [SerializeField] private string enemyTag;
 
@@ -37,10 +38,11 @@ namespace FpsGame.ProjectileGun
         {
             bulletsLeftInMagazine = gunData.magSize;
             isReadyToShoot = true;
+            animator = GetComponent<Animator>();
         }
         private void FixedUpdate()
         {
-            if(spawnBullet)
+            if (spawnBullet)
             {
                 SpawnBullet();
             }
@@ -78,8 +80,12 @@ namespace FpsGame.ProjectileGun
             if (isReadyToShoot && isShooting && !isReloading && bulletsLeftInMagazine > 0 && gameObject.activeSelf)
             {
                 Shoot();
+                if (animator != null)
+                {
+                    animator.SetTrigger("Shoot");
+                }
             }
-            if(!isShooting && time >= gunData.recoilResetTime)
+            if (!isShooting && time >= gunData.recoilResetTime)
             {
                 bulletsShot = 0;
             }
@@ -89,7 +95,7 @@ namespace FpsGame.ProjectileGun
                     Vector3.Lerp(
                         playerController.gunRotation,
                         Vector3.zero,
-                        (gunData.timeBetweenShots * 10f) * Time.deltaTime
+                        (gunData.timeBetweenShots * 60) * Time.deltaTime
                     )
                 );
             }
@@ -100,7 +106,8 @@ namespace FpsGame.ProjectileGun
         {
             isReadyToShoot = false;
             Ray ray;
-            if (playerController.IsMovingOrJumping) {
+            if (playerController.IsMovingOrJumping)
+            {
                 ray = fpsCam.ViewportPointToRay(new Vector3(Random.Range(0.5f - gunData.spread, 0.5f + gunData.spread), Random.Range(0.5f - gunData.spread, 0.5f + gunData.spread), 0));
             }
             else
@@ -108,17 +115,20 @@ namespace FpsGame.ProjectileGun
                 ray = fpsCam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
                 HandleGunRecoil();
             }
-            
+
             RaycastHit hit;
 
             if (Physics.Raycast(ray, out hit))
             {
                 targetPoint = hit.point;
-
-                if (hit.collider.gameObject.CompareTag(enemyTag))
+                Target damageable = hit.transform.GetComponentInParent<Target>();
+                if (hit.collider.gameObject.CompareTag("Head") && damageable != null)
                 {
-                    IDamageable damageable = hit.transform.GetComponent<IDamageable>();
-                    damageable?.TakeDamage(gunData.damage);
+                    damageable.TakeDamage(gunData.damage * gunData.headDamageMultiplier);
+                }
+                else if (damageable != null)
+                {
+                    damageable.TakeDamage(gunData.damage);
                 }
                 GameObject hitPoint = Instantiate(hitPrefab, targetPoint, Quaternion.identity);
                 Destroy(hitPoint, 5);
@@ -129,7 +139,7 @@ namespace FpsGame.ProjectileGun
             }
 
             Vector3 directionWithoutSpread = targetPoint - attackPoint.position;
-            
+
             spawnBullet = true;
 
             if (muzzleFlash != null)

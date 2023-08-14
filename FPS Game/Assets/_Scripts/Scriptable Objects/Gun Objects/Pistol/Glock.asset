@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Glock
   m_EditorClassIdentifier: 
   name: Glock
-  damage: 15
+  damage: 20
   maxDistance: 500
   isAutomatic: 0
   timeBetweenShots: 0.25
@@ -41,6 +41,7 @@ MonoBehaviour:
   - {x: 0, y: 0, z: 0}
   recoilResetTime: 0.4
   spread: 0.1
+  headDamageMultiplier: 4
   shootForce: 35
   currentAmmo: 20
   magSize: 20

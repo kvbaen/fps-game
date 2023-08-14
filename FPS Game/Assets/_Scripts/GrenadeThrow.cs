@@ -83,15 +83,15 @@ public class GrenadeThrow : MonoBehaviour
     {
         equipped = false;
         transform.SetParent(null);
-        
+
         _rb.isKinematic = false;
         _coll.isTrigger = false;
         _grenadeScript.enabled = true;
         _grenadeScript.beenThrown = true;
         _rb.interpolation = RigidbodyInterpolation.Interpolate;
         /*rb.velocity = 2f;*/
-        _rb.AddForce(fpsCam.transform.forward * throwForceForward, ForceMode.VelocityChange);
-        _rb.AddForce(fpsCam.transform.up * throwForceUp, ForceMode.VelocityChange);
+        _rb.AddForce(fpsCam.transform.forward * (throwForceForward + playerController.characterVelocity), ForceMode.VelocityChange);
+        _rb.AddForce(fpsCam.transform.up * (throwForceUp + playerController.characterVelocity), ForceMode.VelocityChange);
     }
 
     public void Drop()

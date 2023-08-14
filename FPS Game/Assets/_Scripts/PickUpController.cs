@@ -14,30 +14,36 @@ public class PickUpController : MonoBehaviour
     public float dropForwardForce, dropUpwardForce;
     public bool equipped;
     public PlayerController playerController;
+    private Animator animator;
     private bool ShouldPickUp => Input.GetKey(playerController.actionKey) && !equipped;
     private bool ShouldDrop => Input.GetKey(playerController.dropKey) && equipped;
     private void Awake()
     {
         gunScript = GetComponent<ProjectileGun>();
         rb = GetComponent<Rigidbody>();
+        animator = GetComponent<Animator>();
     }
     void Start()
-    { 
+    {
         if (!equipped)
         {
             rb.interpolation = RigidbodyInterpolation.Interpolate;
             gunScript.enabled = false;
             rb.isKinematic = false;
+            if (animator != null)
+                animator.enabled = false;
         }
         else
         {
             rb.interpolation = RigidbodyInterpolation.None;
             gunScript.enabled = true;
             rb.isKinematic = true;
+            if (animator != null)
+                animator.enabled = true;
         }
     }
 
-    
+
     void Update()
     {
         Vector3 distanceToPlayer = playerController.transform.position - transform.position;
@@ -45,7 +51,7 @@ public class PickUpController : MonoBehaviour
         {
             Ray ray = fpsCam.ViewportPointToRay(new Vector2(0.5f, 0.5f));
             RaycastHit hit;
-            
+
             if (Physics.Raycast(ray, out hit, pickUpRange))
             {
                 if (hit.collider.gameObject.tag == "Weapon" && gameObject.name == hit.collider.gameObject.name)
@@ -63,7 +69,7 @@ public class PickUpController : MonoBehaviour
             }
         }
 
-        if(ShouldDrop) Drop();
+        if (ShouldDrop) Drop();
     }
 
     private void PickUp()
@@ -77,6 +83,8 @@ public class PickUpController : MonoBehaviour
         rb.interpolation = RigidbodyInterpolation.None;
         rb.isKinematic = true;
         gunScript.enabled = true;
+        if (animator != null)
+            animator.enabled = true;
     }
 
     private void Drop()
@@ -87,11 +95,12 @@ public class PickUpController : MonoBehaviour
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.isKinematic = false;
         gunContainer.SlotFull = gunContainer.transform.childCount >= gunContainer.maxCountItems;
-        rb.AddForce(fpsCam.transform.forward * dropForwardForce, ForceMode.Impulse);
-        rb.AddForce(fpsCam.transform.up * dropUpwardForce, ForceMode.Impulse);
+        rb.AddForce(fpsCam.transform.forward * (dropForwardForce + playerController.characterVelocity), ForceMode.Impulse);
+        rb.AddForce(fpsCam.transform.up * (dropUpwardForce + playerController.characterVelocity), ForceMode.Impulse);
         float random = Random.Range(-1f, 1f);
         rb.AddTorque(new Vector3(random, random, random) * 10);
-         
+        if (animator != null)
+            animator.enabled = false;
         gunScript.enabled = false;
     }
 }

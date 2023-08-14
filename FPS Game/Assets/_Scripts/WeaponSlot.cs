@@ -7,9 +7,11 @@ public class WeaponSlot : MonoBehaviour
     public bool SlotFull = false;
     [SerializeField]
     public int maxCountItems = 1;
+    public int SlotCount;
     private void Update()
     {
-        SlotFull = transform.childCount >= maxCountItems;
+        SlotCount = transform.childCount;
+        SlotFull = SlotCount >= maxCountItems;
     }
 
 

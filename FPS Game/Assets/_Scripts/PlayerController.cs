@@ -6,7 +6,7 @@ public class PlayerController : MonoBehaviour
 {
     public bool CanMove { get; private set; } = true;
     private bool IsSprinting => canSprint && Input.GetKey(sprintKey);
-    public bool IsMovingOrJumping => currentInput != Vector2.zero || !characterController.isGrounded;
+    public bool IsMovingOrJumping => (characterVelocity >= 1) || !characterController.isGrounded;
     private bool ShouldJump => Input.GetKeyDown(jumpKey) && characterController.isGrounded;
     private bool ShouldCrouch => Input.GetKey(crouchKey);
 
@@ -31,6 +31,7 @@ public class PlayerController : MonoBehaviour
     [Header("Movement Parameters")]
     [SerializeField] private float walkSpeed = 3.0f;
     [SerializeField] private float sprintSpeed = 6.0f;
+    [SerializeField] private float rotationSpeed = 10.0f;
 
     [Header("Look Parameters")]
     [SerializeField, Range(1, 10)] private float lookSpeedX = 2.0f;
@@ -49,12 +50,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Vector3 crouchingCenter = new(0, 0.5f, 0);
     [SerializeField] private Vector3 standingCenter = new(0, 0, 0);
     private float velocity = 3.0f;
-    private Vector3 vectorVelocity = new(3.0f, 0 ,0);
+    private Vector3 vectorVelocity = new(3.0f, 0, 0);
     public Vector3 gunRotation = Vector3.zero;
     [SerializeField]
     private Transform cameraHolder;
     public Transform gunHolder;
     private CharacterController characterController;
+    public float characterVelocity = 0;
     [SerializeField]
     private Camera _mainCamera;
 
@@ -72,7 +74,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if(CanMove)
+        if (CanMove)
         {
             HandleMovementInput();
             HandleMouseLook();
@@ -84,6 +86,7 @@ public class PlayerController : MonoBehaviour
 
             ApplyFinalMovements();
         }
+        characterVelocity = characterController.velocity.magnitude;
     }
 
     private void HandleMovementInput()
@@ -100,18 +103,25 @@ public class PlayerController : MonoBehaviour
     {
         rotationX -= Input.GetAxis("Mouse Y") * lookSpeedY;
         rotationX = Mathf.Clamp(rotationX, -upperLookLimit, lowerLookLimit);
-        if(gunRotation != Vector3.zero && !IsMovingOrJumping)
+        Quaternion gunRotationModifier = Quaternion.Euler(new Vector3(
+            gunRotation.x / 1.2f,
+            gunRotation.y / 1.2f,
+            gunRotation.z / 1.2f
+        ));
+        if (gunRotation != Vector3.zero && !IsMovingOrJumping)
         {
-            cameraHolder.transform.localRotation = Quaternion.Euler(
-                rotationX + gunRotation.x / 1.2f,
-                gunRotation.y / 1.2f,
-                gunRotation.z / 1.2f
-                );
+            Quaternion newRotation = Quaternion.Euler(rotationX, 0, 0) * gunRotationModifier;
+            cameraHolder.transform.localRotation = Quaternion.Lerp(
+                cameraHolder.transform.localRotation,
+                newRotation,
+                rotationSpeed * Time.deltaTime
+               );
         }
         else
         {
-            cameraHolder.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
+            cameraHolder.transform.localRotation = Quaternion.Euler(rotationX, 0, 0) * gunRotationModifier;
         }
+
         transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeedX, 0);
     }
 
@@ -123,7 +133,7 @@ public class PlayerController : MonoBehaviour
 
     private void HandleCrouch()
     {
-        if (Physics.Raycast(cameraHolder.transform.position, Vector3.up, 1f)) 
+        if (Physics.Raycast(cameraHolder.transform.position, Vector3.up, 1f))
             return;
 
         float targetHeight = ShouldCrouch ? crouchingHeight : standingHeight;
@@ -147,7 +157,12 @@ public class PlayerController : MonoBehaviour
     public void SetGunRotation(Vector3 _gunRotation)
     {
         gunRotation = _gunRotation;
-        gunHolder.localRotation = Quaternion.Euler(gunRotation);
+        Vector3 gunRotationModifier = new Vector3(
+            gunRotation.x / 1.3f,
+            gunRotation.y / 1.3f,
+            gunRotation.z / 1.3f
+        );
+        gunHolder.localRotation = Quaternion.Euler(gunRotationModifier);
     }
 }
 
