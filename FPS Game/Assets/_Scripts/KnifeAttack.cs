@@ -36,14 +36,12 @@ public class KnifeAttack : MonoBehaviour
             PerformAttack();
             time = 0;
         }
-        if (this.gameObject.activeInHierarchy)
-        {
-            time += Time.smoothDeltaTime;
-        }
+
         if (AmmunitionDisplay != null && this.gameObject.activeInHierarchy)
         {
             AmmunitionDisplay.enabled = false;
         }
+        time += Time.smoothDeltaTime;
     }
 
     private void PerformAttack()

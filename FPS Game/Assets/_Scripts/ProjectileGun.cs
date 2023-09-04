@@ -89,7 +89,7 @@ namespace FpsGame.ProjectileGun
             {
                 bulletsShot = 0;
             }
-            if (!isShooting || bulletsLeftInMagazine == 0)
+            if ((!isShooting || bulletsLeftInMagazine == 0) && playerController.gunRotation != Vector3.zero)
             {
                 playerController.SetGunRotation(
                     Vector3.Lerp(
@@ -98,6 +98,10 @@ namespace FpsGame.ProjectileGun
                         (gunData.timeBetweenShots * 60) * Time.deltaTime
                     )
                 );
+                if (Vector3.Distance(playerController.gunRotation, Vector3.zero) < 0.1)
+                {
+                    playerController.SetGunRotation(Vector3.zero);
+                }
             }
             time += Time.smoothDeltaTime;
         }
@@ -108,12 +112,17 @@ namespace FpsGame.ProjectileGun
             Ray ray;
             if (playerController.IsMovingOrJumping)
             {
-                ray = fpsCam.ViewportPointToRay(new Vector3(Random.Range(0.5f - gunData.spread, 0.5f + gunData.spread), Random.Range(0.5f - gunData.spread, 0.5f + gunData.spread), 0));
+                ray = fpsCam.ViewportPointToRay(
+                    new Vector3(
+                    Random.Range(0.5f - gunData.spread, 0.5f + gunData.spread),
+                    Random.Range(0.5f - gunData.spread, 0.5f + gunData.spread),
+                    0
+                    ));
             }
             else
             {
-                ray = fpsCam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
                 HandleGunRecoil();
+                ray = fpsCam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
             }
 
             RaycastHit hit;

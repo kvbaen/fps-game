@@ -57,6 +57,7 @@ public class PlayerController : MonoBehaviour
     public Transform gunHolder;
     private CharacterController characterController;
     public float characterVelocity = 0;
+    private MenuController menuController;
     [SerializeField]
     private Camera _mainCamera;
 
@@ -70,10 +71,12 @@ public class PlayerController : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        menuController = FindObjectOfType<MenuController>();
     }
 
     void Update()
     {
+        CanMove = !menuController._isGamePaused;
         if (CanMove)
         {
             HandleMovementInput();
@@ -103,14 +106,14 @@ public class PlayerController : MonoBehaviour
     {
         rotationX -= Input.GetAxis("Mouse Y") * lookSpeedY;
         rotationX = Mathf.Clamp(rotationX, -upperLookLimit, lowerLookLimit);
-        Quaternion gunRotationModifier = Quaternion.Euler(new Vector3(
-            gunRotation.x / 1.2f,
+        Vector3 gunRotationModifier = new(
+            rotationX + gunRotation.x / 1.2f,
             gunRotation.y / 1.2f,
             gunRotation.z / 1.2f
-        ));
+        );
         if (gunRotation != Vector3.zero && !IsMovingOrJumping)
         {
-            Quaternion newRotation = Quaternion.Euler(rotationX, 0, 0) * gunRotationModifier;
+            Quaternion newRotation = Quaternion.Euler(gunRotationModifier);
             cameraHolder.transform.localRotation = Quaternion.Lerp(
                 cameraHolder.transform.localRotation,
                 newRotation,
@@ -119,7 +122,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            cameraHolder.transform.localRotation = Quaternion.Euler(rotationX, 0, 0) * gunRotationModifier;
+            cameraHolder.transform.localRotation = Quaternion.Euler(gunRotationModifier);
         }
 
         transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeedX, 0);
@@ -157,10 +160,10 @@ public class PlayerController : MonoBehaviour
     public void SetGunRotation(Vector3 _gunRotation)
     {
         gunRotation = _gunRotation;
-        Vector3 gunRotationModifier = new Vector3(
-            gunRotation.x / 1.3f,
-            gunRotation.y / 1.3f,
-            gunRotation.z / 1.3f
+        Vector3 gunRotationModifier = new(
+            gunRotation.x / 1.2f,
+            gunRotation.y / 1.2f,
+            gunRotation.z / 1.2f
         );
         gunHolder.localRotation = Quaternion.Euler(gunRotationModifier);
     }
