@@ -12,13 +12,14 @@ public class WeaponSwitching : MonoBehaviour
     [SerializeField] private int selectedWeapon;
 
     private float timeSinceLastSwitch;
-    private bool ShouldSwitchToFirstGun => Input.GetKey(playerController.switchToFirstGunKey) && timeSinceLastSwitch >= switchTime;
-    private bool ShouldSwitchToSecondGun => Input.GetKey(playerController.switchToSecondGunKey) && timeSinceLastSwitch >= switchTime;
-    private bool ShouldSwitchToKnife => Input.GetKey(playerController.switchToKnifeKey) && timeSinceLastSwitch >= switchTime;
-    private bool ShouldSwitchToGranade => Input.GetKey(playerController.switchToGranadeKey) && timeSinceLastSwitch >= switchTime;
-    private bool ShouldSwitchToNextWeapon => Input.mouseScrollDelta.y < 0;
-    private bool ShouldSwitchToPreviousWeapon => Input.mouseScrollDelta.y > 0;
+    private bool ShouldSwitchToFirstGun => Input.GetKey(playerController.switchToFirstGunKey) && timeSinceLastSwitch >= switchTime && !menuController._isGamePaused;
+    private bool ShouldSwitchToSecondGun => Input.GetKey(playerController.switchToSecondGunKey) && timeSinceLastSwitch >= switchTime && !menuController._isGamePaused;
+    private bool ShouldSwitchToKnife => Input.GetKey(playerController.switchToKnifeKey) && timeSinceLastSwitch >= switchTime && !menuController._isGamePaused;
+    private bool ShouldSwitchToGranade => Input.GetKey(playerController.switchToGranadeKey) && timeSinceLastSwitch >= switchTime && !menuController._isGamePaused;
+    private bool ShouldSwitchToNextWeapon => Input.mouseScrollDelta.y < 0 && !menuController._isGamePaused;
+    private bool ShouldSwitchToPreviousWeapon => Input.mouseScrollDelta.y > 0 && !menuController._isGamePaused;
     private PlayerController playerController;
+    private MenuController menuController;
     private void Awake()
     {
         playerController = GetComponentInParent<PlayerController>();
@@ -28,6 +29,8 @@ public class WeaponSwitching : MonoBehaviour
         SetWeapon();
         Select(selectedWeapon);
         timeSinceLastSwitch = 0f;
+        menuController = FindObjectOfType<MenuController>();
+
     }
 
     private void Update()

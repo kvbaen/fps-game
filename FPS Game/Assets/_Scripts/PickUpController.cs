@@ -14,6 +14,7 @@ public class PickUpController : MonoBehaviour
     public float dropForwardForce, dropUpwardForce;
     public bool equipped;
     public PlayerController playerController;
+    private MenuController menuController;
     private Animator animator;
     private bool ShouldPickUp => Input.GetKey(playerController.actionKey) && !equipped;
     private bool ShouldDrop => Input.GetKey(playerController.dropKey) && equipped;
@@ -22,6 +23,7 @@ public class PickUpController : MonoBehaviour
         gunScript = GetComponent<ProjectileGun>();
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
+        menuController = FindObjectOfType<MenuController>();
     }
     void Start()
     {
@@ -47,7 +49,7 @@ public class PickUpController : MonoBehaviour
     void Update()
     {
         Vector3 distanceToPlayer = playerController.transform.position - transform.position;
-        if (ShouldPickUp && distanceToPlayer.magnitude <= pickUpRange)
+        if (ShouldPickUp && distanceToPlayer.magnitude <= pickUpRange && !menuController._isGamePaused)
         {
             Ray ray = fpsCam.ViewportPointToRay(new Vector2(0.5f, 0.5f));
             RaycastHit hit;
@@ -69,7 +71,7 @@ public class PickUpController : MonoBehaviour
             }
         }
 
-        if (ShouldDrop) Drop();
+        if (ShouldDrop && !menuController._isGamePaused) Drop();
     }
 
     private void PickUp()

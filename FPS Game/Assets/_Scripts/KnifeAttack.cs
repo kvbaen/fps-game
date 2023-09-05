@@ -21,16 +21,18 @@ public class KnifeAttack : MonoBehaviour
     [SerializeField] private float knifeHoleLifeSpan = 5;
     private Animator animator;
     private PlayerController playerController;
+    private MenuController menuController;
     private bool ShouldAttack => Input.GetKey(playerController.shootKey) && !isAttacking && this.gameObject.activeInHierarchy && time >= timeBetweenAttack;
     private void Awake()
     {
         playerController = GetComponentInParent<PlayerController>();
         animator = GetComponent<Animator>();
+        menuController = FindObjectOfType<MenuController>();
     }
 
     private void Update()
     {
-        if (ShouldAttack)
+        if (ShouldAttack && !menuController._isGamePaused)
         {
             isAttacking = true;
             PerformAttack();

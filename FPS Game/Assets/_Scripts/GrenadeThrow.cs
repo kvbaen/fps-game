@@ -16,12 +16,14 @@ public class GrenadeThrow : MonoBehaviour
     public Camera fpsCam;
     public WeaponSlot gunContainer;
     private Grenade _grenadeScript;
+    private MenuController menuController;
     public PlayerController playerController;
     private void Awake()
     {
         _grenadeScript = GetComponent<Grenade>();
         _rb = GetComponentInParent<Rigidbody>();
         _coll = GetComponentInParent<Collider>();
+        menuController = FindObjectOfType<MenuController>();
     }
     void Start()
     {
@@ -44,13 +46,13 @@ public class GrenadeThrow : MonoBehaviour
     void Update()
     {
 
-        if (ShouldThrow && this.gameObject.activeInHierarchy)
+        if (ShouldThrow && this.gameObject.activeInHierarchy && !menuController._isGamePaused)
         {
             ThrowGrenade();
             Invoke(nameof(ChangeItem), timeBetweenSwitching);
         }
 
-        if (ShouldDrop && this.gameObject.activeInHierarchy)
+        if (ShouldDrop && this.gameObject.activeInHierarchy && !menuController._isGamePaused)
         {
             Drop();
             Invoke(nameof(ChangeItem), timeBetweenSwitching);
@@ -64,7 +66,7 @@ public class GrenadeThrow : MonoBehaviour
 
         Vector3 distanceToPlayer = playerController.transform.position - transform.position;
 
-        if (ShouldPickUp && distanceToPlayer.magnitude <= pickUpRange)
+        if (ShouldPickUp && distanceToPlayer.magnitude <= pickUpRange && !menuController._isGamePaused)
         {
             Ray ray = fpsCam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
             RaycastHit hit;
