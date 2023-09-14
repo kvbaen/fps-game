@@ -30,3 +30,5 @@ obj/
 ehthumbs.db
 Thumbs.db
 FPS Game/Logs
+FPS Game/UserSettings
+*.csproj

@@ -104,6 +104,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BulletLite_02 Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 5341742223406746680, guid: 9c3cddd6060b7cc4eadfb9cefcf6e7db, type: 3}
+      propertyPath: m_TagString
+      value: Weapon
+      objectReference: {fileID: 0}
     - target: {fileID: 5870464556724626218, guid: 9c3cddd6060b7cc4eadfb9cefcf6e7db, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0

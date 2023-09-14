@@ -1,0 +1,277 @@
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using System.IO;
+using UnityEngine.UI;
+using System.Collections;
+using TMPro;
+using Unity.VisualScripting;
+
+public class MenuController : MonoBehaviour
+{
+    [SerializeField] private GameObject menuCanvas;
+    [SerializeField] private Camera menuCamera = null;
+    [SerializeField] private GameObject pausedGameDialog;
+    private bool IsESCPressed => Input.GetKeyDown(KeyCode.Escape);
+
+    [Header("Volume Settings")]
+    [SerializeField] private TMP_Text volumeTextValue = null;
+    [SerializeField] private Slider volumeSlider = null;
+    [SerializeField] private GameObject confirmationPrompt = null;
+    [SerializeField] private float defaultVolume = 0.5f;
+
+    [Header("Gameplay Settings")]
+    [SerializeField] private TMP_InputField sensitivityInputValue = null;
+    [SerializeField] private Slider sensitivitySlider = null;
+    [SerializeField] private float defaultSensitivity = 1f;
+    public float mainSensitivity = 1f;
+
+    [Header("Graphics Settings")]
+    [SerializeField] private TMP_InputField brightnessInputValue = null;
+    [SerializeField] private Slider brightnessSlider = null;
+    [SerializeField] private float defaultBrightness = 1;
+    [SerializeField] private Toggle fullScreenToggle = null;
+    [SerializeField] private TMP_Dropdown qualityDropdown = null;
+
+    private int _qualityLevel;
+    private bool _isFullScreen = true;
+    private float _brightnessLevel;
+    public bool _isGamePaused;
+
+    [Header("Resolution Dropdowns")]
+    public TMP_Dropdown resolutionDropdown;
+    private Resolution[] resolutions;
+
+    [Header("Maps Settings")]
+    public string mapsFolder;
+    public List<string> mapNames;
+    public string selectedMap;
+    AsyncOperation loadingOperation;
+
+    private void Start()
+    {
+        mapNames = new List<string>();
+        resolutions = Screen.resolutions;
+        resolutionDropdown.ClearOptions();
+        List<string> options = new List<string>();
+        int currentResolutionIndex = 0;
+        for (int i = 0; i < resolutions.Length; i++)
+        {
+            string option = resolutions[i].width + " x " + resolutions[i].height + " (" + resolutions[i].refreshRateRatio + " Hz)";
+            options.Add(option);
+            if (resolutions[i].width == Screen.width && resolutions[i].height == Screen.height)
+            {
+                currentResolutionIndex = i;
+            }
+        }
+        resolutionDropdown.AddOptions(options);
+        resolutionDropdown.value = currentResolutionIndex;
+        resolutionDropdown.RefreshShownValue();
+        LoadMaps();
+    }
+
+    private void Update()
+    {
+        if (IsESCPressed && SceneManager.loadedSceneCount > 1)
+        {
+            if (_isGamePaused)
+            {
+                ResumeGame();
+                _isGamePaused = false;
+            }
+            else
+            {
+                PauseGame();
+                _isGamePaused = true;
+            }
+        }
+    }
+
+    public void SetResolution(int resolutionIndex)
+    {
+        Resolution resolution = resolutions[resolutionIndex];
+        PlayerPrefs.SetInt("masterResolution", resolutionIndex);
+        Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+    }
+    public void EnterMap()
+    {
+        foreach (var mapName in mapNames)
+        {
+            if (mapName.Equals(selectedMap))
+            {
+                if (SceneManager.loadedSceneCount > 1)
+                {
+                    int mapIndex = SceneManager.GetSceneAt(1).buildIndex;
+                    loadingOperation = SceneManager.UnloadSceneAsync(mapIndex);
+                    loadingOperation.completed += (asyncOperation) =>
+                    {
+                        loadingOperation = SceneManager.LoadSceneAsync(mapName, LoadSceneMode.Additive);
+                    };
+                }
+                else if (SceneManager.loadedSceneCount == 1)
+                {
+                    loadingOperation = SceneManager.LoadSceneAsync(mapName, LoadSceneMode.Additive);
+                }
+                menuCanvas.SetActive(false);
+                menuCamera.gameObject.SetActive(false);
+            }
+        }
+    }
+    private void LoadMaps()
+    {
+        for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
+        {
+            var path = SceneUtility.GetScenePathByBuildIndex(i);
+            var sceneName = Path.GetFileNameWithoutExtension(path);
+            if (path[..path.LastIndexOf('/')] == mapsFolder)
+            {
+                mapNames.Add(sceneName);
+            }
+        }
+    }
+    public void SwitchToMainMenu()
+    {
+        Scene scene = SceneManager.GetSceneAt(1);
+        if (scene.name != "MainMenu")
+        {
+            loadingOperation = SceneManager.UnloadSceneAsync(scene);
+            Image backgroundGO = menuCanvas.transform.GetChild(1).GetComponent<Image>();
+            backgroundGO.sprite = Resources.Load<Sprite>("MenuBackground");
+            backgroundGO.color = new Color(255, 255, 255, 1);
+            pausedGameDialog.SetActive(false);
+        }
+
+    }
+
+    public void ExitButton()
+    {
+        Application.Quit();
+    }
+
+    public void SetVolume(float volume)
+    {
+        AudioListener.volume = volume;
+        volumeTextValue.text = volume.ToString("0.0");
+    }
+
+    public void VolumeApply()
+    {
+        PlayerPrefs.SetFloat("masterVolume", AudioListener.volume);
+        StartCoroutine(ConfirmationBox());
+    }
+
+    public void SetSenitivity(float sensitivity)
+    {
+        mainSensitivity = sensitivity;
+        sensitivityInputValue.text = sensitivity.ToString("0.0");
+    }
+
+    public void SetSensitivityinput(string sensitivity)
+    {
+        sensitivitySlider.value = float.Parse(sensitivity);
+        SetSenitivity(float.Parse(sensitivity));
+    }
+
+    public void GameplayApply()
+    {
+        PlayerPrefs.SetFloat("masterSensitivity", mainSensitivity);
+        StartCoroutine(ConfirmationBox());
+    }
+
+    public void SetBrightnessInput(string brightness)
+    {
+        brightnessSlider.value = float.Parse(brightness);
+        SetBrightness(float.Parse(brightness));
+    }
+    public void SetBrightness(float brightness)
+    {
+        _brightnessLevel = brightness;
+        brightnessInputValue.text = brightness.ToString("0.0");
+    }
+
+    public void SetFullScreen(bool isFullScreen)
+    {
+        _isFullScreen = isFullScreen;
+    }
+
+    public void SetQuality(int qualityIndex)
+    {
+        _qualityLevel = qualityIndex;
+    }
+    public void GraphicsApply()
+    {
+        PlayerPrefs.SetFloat("masterBrightness", _brightnessLevel);
+
+        PlayerPrefs.SetInt("masterQuality", _qualityLevel);
+        QualitySettings.SetQualityLevel(_qualityLevel);
+
+        PlayerPrefs.SetInt("masterFullScreen", (_isFullScreen ? 1 : 0));
+        Screen.fullScreen = _isFullScreen;
+        StartCoroutine(ConfirmationBox());
+    }
+
+    public void ResetButton(string MenuType)
+    {
+        if (MenuType == "Audio")
+        {
+            AudioListener.volume = defaultVolume;
+            PlayerPrefs.SetFloat("masterVolume", defaultVolume);
+            volumeSlider.value = defaultVolume;
+            volumeTextValue.text = defaultVolume.ToString("0.0");
+            VolumeApply();
+        }
+        if (MenuType == "Gameplay")
+        {
+            sensitivityInputValue.text = defaultSensitivity.ToString("0.0");
+            sensitivitySlider.value = defaultSensitivity;
+            mainSensitivity = defaultSensitivity;
+            GameplayApply();
+        }
+        if (MenuType == "Graphics")
+        {
+            brightnessSlider.value = defaultBrightness;
+            brightnessInputValue.text = defaultBrightness.ToString("0.0");
+
+            qualityDropdown.value = 1;
+            QualitySettings.SetQualityLevel(1);
+
+            fullScreenToggle.isOn = true;
+            Screen.fullScreen = true;
+
+            Resolution currentResolution = Screen.currentResolution;
+            Screen.SetResolution(currentResolution.width, currentResolution.height, Screen.fullScreen);
+            resolutionDropdown.value = resolutions.Length;
+            PlayerPrefs.SetInt("masterResolution", resolutions.Length);
+            GraphicsApply();
+        }
+    }
+
+    public IEnumerator ConfirmationBox()
+    {
+        confirmationPrompt.SetActive(true);
+        yield return new WaitForSeconds(2);
+        confirmationPrompt.SetActive(false);
+    }
+
+    public void PauseGame()
+    {
+        Time.timeScale = 0;
+        AudioListener.pause = true;
+        menuCanvas.SetActive(true);
+        pausedGameDialog.SetActive(true);
+        Image backgroundGO = menuCanvas.transform.GetChild(1).GetComponent<Image>();
+        backgroundGO.sprite = null;
+        backgroundGO.color = new Color(0, 0, 0, 0.6f);
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+    }
+    public void ResumeGame()
+    {
+        Time.timeScale = 1;
+        AudioListener.pause = false;
+        pausedGameDialog.SetActive(false);
+        menuCanvas.SetActive(false);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+}
