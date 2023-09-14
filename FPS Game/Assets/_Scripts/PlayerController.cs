@@ -104,7 +104,7 @@ public class PlayerController : MonoBehaviour
         rotationX -= Input.GetAxis("Mouse Y") * lookSpeedY;
         rotationX = Mathf.Clamp(rotationX, -upperLookLimit, lowerLookLimit);
         Quaternion gunRotationModifier = Quaternion.Euler(new Vector3(
-            gunRotation.x / 1.2f,
+            rotationX + gunRotation.x / 1.2f,
             gunRotation.y / 1.2f,
             gunRotation.z / 1.2f
         ));

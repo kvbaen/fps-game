@@ -33,14 +33,15 @@ public class KnifeAttack : MonoBehaviour
         if (ShouldAttack)
         {
             isAttacking = true;
+            animator.SetBool("isAttacking", true);
             PerformAttack();
             time = 0;
         }
-        if (this.gameObject.activeInHierarchy)
+        if (gameObject.activeInHierarchy)
         {
             time += Time.smoothDeltaTime;
         }
-        if (AmmunitionDisplay != null && this.gameObject.activeInHierarchy)
+        if (AmmunitionDisplay != null && gameObject.activeInHierarchy)
         {
             AmmunitionDisplay.enabled = false;
         }
@@ -80,5 +81,6 @@ public class KnifeAttack : MonoBehaviour
     public void FinishAttack()
     {
         isAttacking = false;
+        animator.SetBool("isAttacking", false);
     }
 }
