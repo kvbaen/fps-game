@@ -1,6 +1,5 @@
 using UnityEngine;
 using TMPro;
-using static UnityEngine.GraphicsBuffer;
 
 namespace FpsGame.ProjectileGun
 {
@@ -91,23 +90,23 @@ namespace FpsGame.ProjectileGun
             }
             if ((!isShooting || bulletsLeftInMagazine == 0) && playerController.gunRotation != Vector3.zero)
             {
-                /*playerController.SetGunRotation(
+                playerController.SetGunRotation(
                     Vector3.Lerp(
                         playerController.gunRotation,
                         Vector3.zero,
                         (gunData.timeBetweenShots * 60) * Time.deltaTime
                     )
-                );*/
+                );
                 if (animator.GetBool("isShooting"))
                 {
                     animator.SetBool("isShooting", false);
-                );
+                }
                 if (Vector3.Distance(playerController.gunRotation, Vector3.zero) < 0.1)
                 {
                     playerController.SetGunRotation(Vector3.zero);
                 }
+                time += Time.smoothDeltaTime;
             }
-            time += Time.smoothDeltaTime;
         }
 
         private void Shoot()
@@ -186,13 +185,12 @@ namespace FpsGame.ProjectileGun
             }
             else
             {
-                /* Vector3 newRotation = playerController.gunRotation + new Vector3(
+                Vector3 newRotation = playerController.gunRotation + new Vector3(
                         gunData.recoilPattern[bulletsShot].x != 0 ? gunData.recoilPattern[bulletsShot].x : Random.Range(-gunData.spread * 3, gunData.spread * 3),
                         gunData.recoilPattern[bulletsShot].y != 0 ? gunData.recoilPattern[bulletsShot].y : Random.Range(-gunData.spread * 3, gunData.spread * 3),
                         gunData.recoilPattern[bulletsShot].z)
                     + walkSpread;
                 playerController.SetGunRotation(newRotation);
-                */
 
 
                 if (bulletsShot + 1 <= gunData.recoilPattern.Length - 1)
