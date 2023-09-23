@@ -5,11 +5,11 @@ using UnityEngine;
 public class WeaponSwitching : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private Transform[] weapons;
+    [SerializeField] public Transform[] weapons;
 
     [Header("Settings")]
     [SerializeField] private float switchTime;
-    [SerializeField] private int selectedWeapon;
+    [SerializeField] public int selectedWeapon;
 
     private float timeSinceLastSwitch;
     private bool ShouldSwitchToFirstGun => Input.GetKey(playerController.switchToFirstGunKey) && timeSinceLastSwitch >= switchTime && !menuController._isGamePaused;
@@ -20,6 +20,8 @@ public class WeaponSwitching : MonoBehaviour
     private bool ShouldSwitchToPreviousWeapon => Input.mouseScrollDelta.y > 0 && !menuController._isGamePaused;
     private PlayerController playerController;
     private MenuController menuController;
+    [SerializeField]
+    private GunIconsController gunIconsController;
     private void Awake()
     {
         playerController = GetComponentInParent<PlayerController>();
@@ -30,7 +32,6 @@ public class WeaponSwitching : MonoBehaviour
         Select(selectedWeapon);
         timeSinceLastSwitch = 0f;
         menuController = FindObjectOfType<MenuController>();
-
     }
 
     private void Update()
@@ -80,6 +81,7 @@ public class WeaponSwitching : MonoBehaviour
         if (previousSelectedWeapon != selectedWeapon)
         {
             Select(selectedWeapon);
+            gunIconsController.SwitchActiveWeapon();
         }
 
 

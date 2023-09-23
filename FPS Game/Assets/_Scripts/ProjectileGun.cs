@@ -13,6 +13,7 @@ namespace FpsGame.ProjectileGun
         private bool ShouldShoot => Input.GetKey(playerController.shootKey);
         private bool ShouldShootOnClick => Input.GetKeyDown(playerController.shootKey);
         private bool ShouldReload => Input.GetKey(playerController.reloadKey) && bulletsLeftInMagazine < gunData.magSize && !isReloading && gameObject.activeSelf;
+        private bool CanReload => ammoCount > 0;
 
         // References
         public Camera fpsCam;
@@ -21,7 +22,7 @@ namespace FpsGame.ProjectileGun
         public PlayerController playerController;
         public GameObject hitPrefab;
         private Animator animator;
-        [SerializeField] private GunData gunData;
+        [SerializeField] public GunData gunData;
         [SerializeField] private string enemyTag;
 
         // Graphics
@@ -33,11 +34,13 @@ namespace FpsGame.ProjectileGun
         private bool spawnBullet = false;
         private Vector3 walkSpread = Vector3.zero;
         private Vector3 targetPoint;
+        private int ammoCount;
         private void Awake()
         {
             bulletsLeftInMagazine = gunData.magSize;
             isReadyToShoot = true;
             animator = GetComponent<Animator>();
+            ammoCount = gunData.magNumber * gunData.magSize;
         }
         private void FixedUpdate()
         {
@@ -53,7 +56,7 @@ namespace FpsGame.ProjectileGun
             if (ammunitionDisplay != null)
             {
                 ammunitionDisplay.enabled = true;
-                ammunitionDisplay.SetText(bulletsLeftInMagazine + " / " + gunData.magSize);
+                ammunitionDisplay.SetText(bulletsLeftInMagazine + " / " + ammoCount);
             }
             if (playerController.IsMovingOrJumping)
             {
@@ -74,12 +77,12 @@ namespace FpsGame.ProjectileGun
                 isShooting = ShouldShootOnClick;
             }
 
-            if (ShouldReload || bulletsLeftInMagazine == 0) Reload();
+            if ((ShouldReload || bulletsLeftInMagazine == 0) && CanReload) Reload();
 
             if (isReadyToShoot && isShooting && !isReloading && bulletsLeftInMagazine > 0 && gameObject.activeSelf)
             {
                 Shoot();
-                if  (!animator.GetBool("isShooting"))
+                if (!animator.GetBool("isShooting"))
                 {
                     animator.SetBool("isShooting", true);
                 }
@@ -105,8 +108,8 @@ namespace FpsGame.ProjectileGun
                 {
                     playerController.SetGunRotation(Vector3.zero);
                 }
-                time += Time.smoothDeltaTime;
             }
+            time += Time.smoothDeltaTime;
         }
 
         private void Shoot()
@@ -220,7 +223,17 @@ namespace FpsGame.ProjectileGun
         {
             if (gameObject.activeInHierarchy && isReloading)
             {
-                bulletsLeftInMagazine = gunData.magSize;
+                int bulletsToRealod = gunData.magSize - bulletsLeftInMagazine;
+                if (ammoCount >= bulletsToRealod)
+                {
+                    bulletsLeftInMagazine = gunData.magSize;
+                    ammoCount -= bulletsToRealod;
+                }
+                else
+                {
+                    bulletsLeftInMagazine += ammoCount;
+                    ammoCount = 0;
+                }
                 bulletsShot = 0;
                 isReloading = false;
                 animator.SetBool("isReloading", false);

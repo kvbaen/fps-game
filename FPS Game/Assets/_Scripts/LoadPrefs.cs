@@ -55,6 +55,13 @@ public class LoadPrefs : MonoBehaviour
                 QualitySettings.SetQualityLevel(localQuality);
             }
 
+            if (PlayerPrefs.HasKey("crosshairIndex"))
+            {
+                int localCrosshair = PlayerPrefs.GetInt("crosshairIndex");
+
+                menuController.loadedCrosshairIndex = localCrosshair;
+            }
+
             if (PlayerPrefs.HasKey("masterBrightness"))
             {
                 float localBrightness = PlayerPrefs.GetFloat("masterBrightness");
@@ -97,6 +104,7 @@ public class LoadPrefs : MonoBehaviour
                     fullScreenToggle.isOn ? FullScreenMode.ExclusiveFullScreen : FullScreenMode.Windowed,
                     resolutions[localResolutionIndex].refreshRateRatio
                     );
+                menuController.loadedResolutionIndex = localResolutionIndex;
             }
         }
     }

@@ -6,6 +6,8 @@ using UnityEngine.UI;
 using System.Collections;
 using TMPro;
 using Unity.VisualScripting;
+using System.Data.Common;
+using System.Linq;
 
 public class MenuController : MonoBehaviour
 {
@@ -24,7 +26,13 @@ public class MenuController : MonoBehaviour
     [SerializeField] private TMP_InputField sensitivityInputValue = null;
     [SerializeField] private Slider sensitivitySlider = null;
     [SerializeField] private float defaultSensitivity = 1f;
+    [SerializeField] private TMP_Dropdown crosshairDropdown = null;
     public float mainSensitivity = 1f;
+    [SerializeField] private string crosshairFolder;
+    [SerializeField] private int defaultCrosshair;
+    private Sprite[] crosshairSprites = null;
+    public Sprite crosshair;
+    public int loadedCrosshairIndex = -1;
 
     [Header("Graphics Settings")]
     [SerializeField] private TMP_InputField brightnessInputValue = null;
@@ -41,6 +49,8 @@ public class MenuController : MonoBehaviour
     [Header("Resolution Dropdowns")]
     public TMP_Dropdown resolutionDropdown;
     private Resolution[] resolutions;
+    Resolution resolution;
+    public int loadedResolutionIndex = -1;
 
     [Header("Maps Settings")]
     public string mapsFolder;
@@ -67,6 +77,24 @@ public class MenuController : MonoBehaviour
         resolutionDropdown.AddOptions(options);
         resolutionDropdown.value = currentResolutionIndex;
         resolutionDropdown.RefreshShownValue();
+        crosshairSprites = Resources.LoadAll<Sprite>(crosshairFolder);
+        List<TMP_Dropdown.OptionData> crosshairItems = new List<TMP_Dropdown.OptionData>();
+        foreach (var crosshair in crosshairSprites)
+        {
+            var crosshairItem = new TMP_Dropdown.OptionData(crosshair.name, crosshair);
+            crosshairItems.Add(crosshairItem);
+        }
+        crosshairDropdown.ClearOptions();
+        crosshairDropdown.AddOptions(crosshairItems);
+        crosshairDropdown.RefreshShownValue();
+        if (loadedCrosshairIndex >= 0)
+        {
+            crosshairDropdown.value = loadedCrosshairIndex;
+        }
+        if (loadedResolutionIndex >= 0)
+        {
+            resolutionDropdown.value = loadedResolutionIndex;
+        }
         LoadMaps();
     }
 
@@ -89,10 +117,14 @@ public class MenuController : MonoBehaviour
 
     public void SetResolution(int resolutionIndex)
     {
-        Resolution resolution = resolutions[resolutionIndex];
-        PlayerPrefs.SetInt("masterResolution", resolutionIndex);
-        Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+        resolution = resolutions[resolutionIndex];
     }
+
+    public void SetCrosshair(int crosshairIndex)
+    {
+        crosshair = crosshairSprites[crosshairIndex];
+    }
+
     public void EnterMap()
     {
         foreach (var mapName in mapNames)
@@ -140,7 +172,6 @@ public class MenuController : MonoBehaviour
             backgroundGO.color = new Color(255, 255, 255, 1);
             pausedGameDialog.SetActive(false);
         }
-
     }
 
     public void ExitButton()
@@ -175,6 +206,7 @@ public class MenuController : MonoBehaviour
     public void GameplayApply()
     {
         PlayerPrefs.SetFloat("masterSensitivity", mainSensitivity);
+        PlayerPrefs.SetInt("crosshairIndex", crosshairSprites.ToList<Sprite>().IndexOf(crosshair));
         StartCoroutine(ConfirmationBox());
     }
 
@@ -207,6 +239,9 @@ public class MenuController : MonoBehaviour
 
         PlayerPrefs.SetInt("masterFullScreen", (_isFullScreen ? 1 : 0));
         Screen.fullScreen = _isFullScreen;
+
+        PlayerPrefs.SetInt("masterResolution", resolutions.ToList<Resolution>().IndexOf(resolution));
+        Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
         StartCoroutine(ConfirmationBox());
     }
 
@@ -225,6 +260,7 @@ public class MenuController : MonoBehaviour
             sensitivityInputValue.text = defaultSensitivity.ToString("0.0");
             sensitivitySlider.value = defaultSensitivity;
             mainSensitivity = defaultSensitivity;
+            crosshairDropdown.value = defaultCrosshair;
             GameplayApply();
         }
         if (MenuType == "Graphics")

@@ -60,6 +60,7 @@ public class PlayerController : MonoBehaviour
     private MenuController menuController;
     [SerializeField]
     private Camera _mainCamera;
+    public int health = 100;
 
     private Vector3 moveDirection;
     private Vector2 currentInput;
@@ -161,11 +162,17 @@ public class PlayerController : MonoBehaviour
     {
         gunRotation = _gunRotation;
         Vector3 gunRotationModifier = new(
-            gunRotation.x / 1.2f,
-            gunRotation.y / 1.2f,
-            gunRotation.z / 1.2f
+            gunRotation.x / 1.1f,
+            gunRotation.y / 1.1f,
+            gunRotation.z / 1.1f
         );
         gunHolder.localRotation = Quaternion.Euler(gunRotationModifier);
+    }
+
+    public void TakeDamage(int damage)
+    {
+        health -= damage;
+        if (health <= 0) Destroy(gameObject);
     }
 }
 

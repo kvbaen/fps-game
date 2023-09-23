@@ -23,4 +23,5 @@ public class GunData : ScriptableObject
     public int currentAmmo;
     public int magSize;
     public float reloadTime;
+    public int magNumber;
 }
