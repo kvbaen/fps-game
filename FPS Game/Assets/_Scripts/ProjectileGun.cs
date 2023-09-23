@@ -33,10 +33,12 @@ namespace FpsGame.ProjectileGun
         private bool spawnBullet = false;
         private Vector3 walkSpread = Vector3.zero;
         private Vector3 targetPoint;
+        private float waitTime;
         private void Awake()
         {
             bulletsLeftInMagazine = gunData.magSize;
             isReadyToShoot = true;
+            waitTime = gunData.takeTime;
             animator = GetComponent<Animator>();
         }
         private void FixedUpdate()
@@ -48,6 +50,7 @@ namespace FpsGame.ProjectileGun
         }
         private void Update()
         {
+            if(waitTime > 0) waitTime -= Time.deltaTime;
             HandleInput();
 
             if (ammunitionDisplay != null)
@@ -74,6 +77,8 @@ namespace FpsGame.ProjectileGun
                 isShooting = ShouldShootOnClick;
             }
 
+            if (waitTime > 0) return;
+
             if (ShouldReload || bulletsLeftInMagazine == 0) Reload();
 
             if (isReadyToShoot && isShooting && !isReloading && bulletsLeftInMagazine > 0 && gameObject.activeSelf)
@@ -97,16 +102,14 @@ namespace FpsGame.ProjectileGun
                         (gunData.timeBetweenShots * 60) * Time.deltaTime
                     )
                 );
-                if (animator.GetBool("isShooting"))
-                {
-                    animator.SetBool("isShooting", false);
-                }
+                
                 if (Vector3.Distance(playerController.gunRotation, Vector3.zero) < 0.1)
                 {
                     playerController.SetGunRotation(Vector3.zero);
                 }
-                time += Time.smoothDeltaTime;
+                
             }
+            time += Time.smoothDeltaTime;
         }
 
         private void Shoot()
@@ -172,6 +175,10 @@ namespace FpsGame.ProjectileGun
         private void ResetShot()
         {
             isReadyToShoot = true;
+            if (animator.GetBool("isShooting"))
+            {
+                animator.SetBool("isShooting", false);
+            }
             allowInvoke = true;
             time = 0;
         }
@@ -206,6 +213,7 @@ namespace FpsGame.ProjectileGun
 
         private void OnDisable()
         {
+            waitTime = gunData.takeTime;
             isReloading = false;
         }
 
@@ -230,6 +238,7 @@ namespace FpsGame.ProjectileGun
                 isReloading = false;
                 animator.SetBool("isReloading", false);
             }
+            waitTime = 0.2f;
         }
         private void SpawnBullet()
         {

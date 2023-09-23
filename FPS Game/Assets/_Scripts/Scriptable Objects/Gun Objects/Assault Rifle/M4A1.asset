@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7493e4e85cb1b744c9a0bc4cafed4105, type: 3}
   m_Name: M4A1
   m_EditorClassIdentifier: 
-  name: Ar
+  name: M4A1
+  takeTime: 1
   damage: 25
   maxDistance: 500
   isAutomatic: 1
-  timeBetweenShots: 0.208
+  timeBetweenShots: 0.25
   timeBetweenMultipleShots: 0
   recoilPattern:
   - {x: 0, y: 0, z: 0}

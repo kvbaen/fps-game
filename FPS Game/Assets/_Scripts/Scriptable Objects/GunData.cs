@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Gun", menuName = "Weapon/Gun")]
@@ -9,6 +7,7 @@ public class GunData : ScriptableObject
     public new string name;
 
     [Header("Shooting")]
+    public float takeTime;
     public float damage;
     public float maxDistance;
     public bool isAutomatic;
@@ -16,6 +15,7 @@ public class GunData : ScriptableObject
     public Vector3[] recoilPattern;
     public float recoilResetTime;
     public float spread, headDamageMultiplier;
+
     [Header("Bullet")]
     public float shootForce;
 

@@ -160,12 +160,12 @@ public class PlayerController : MonoBehaviour
     public void SetGunRotation(Vector3 _gunRotation)
     {
         gunRotation = _gunRotation;
-        Vector3 gunRotationModifier = new(
-            gunRotation.x / 1.2f,
-            gunRotation.y / 1.2f,
-            gunRotation.z / 1.2f
-        );
-        gunHolder.localRotation = Quaternion.Euler(gunRotationModifier);
+        /* Vector3 gunRotationModifier = new(
+             gunRotation.x / 1.1f,
+             gunRotation.y / 1.1f,
+             gunRotation.z / 1.1f
+         );
+         gunHolder.localRotation = Quaternion.Euler(gunRotationModifier);*/
     }
 }
 
