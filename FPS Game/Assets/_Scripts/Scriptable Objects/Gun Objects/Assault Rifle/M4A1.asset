@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: M4A1
   m_EditorClassIdentifier: 
   name: M4A1
+  takeTime: 1
   damage: 25
   maxDistance: 500
   isAutomatic: 1
-  timeBetweenShots: 0.2
+  timeBetweenShots: 0.25
   timeBetweenMultipleShots: 0
   recoilPattern:
   - {x: 0, y: 0, z: 0}

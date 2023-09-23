@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Renetti
   m_EditorClassIdentifier: 
   name: Renetti
+  takeTime: 0.8
   damage: 20
   maxDistance: 500
   isAutomatic: 0
