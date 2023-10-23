@@ -8,11 +8,12 @@ TagManager:
   - Weapon
   - FxTemporaire
   - Head
+  - Bullet
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
   - Weapon

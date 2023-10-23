@@ -11,6 +11,8 @@ using System.Linq;
 
 public class MenuController : MonoBehaviour
 {
+    public static MenuController instance;
+
     [SerializeField] private GameObject menuCanvas;
     [SerializeField] private Camera menuCamera = null;
     [SerializeField] private GameObject pausedGameDialog;
@@ -58,8 +60,16 @@ public class MenuController : MonoBehaviour
     public string selectedMap;
     AsyncOperation loadingOperation;
 
-    private void Start()
+    private void Awake()
     {
+        if (instance == null)
+            instance = this;
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+        DontDestroyOnLoad(this);
         mapNames = new List<string>();
         resolutions = Screen.resolutions;
         resolutionDropdown.ClearOptions();
@@ -138,11 +148,19 @@ public class MenuController : MonoBehaviour
                     loadingOperation.completed += (asyncOperation) =>
                     {
                         loadingOperation = SceneManager.LoadSceneAsync(mapName, LoadSceneMode.Additive);
+                        loadingOperation.completed += (asyncOperation) =>
+                        {
+                            SceneManager.SetActiveScene(SceneManager.GetSceneAt(1));
+                        };
                     };
                 }
                 else if (SceneManager.loadedSceneCount == 1)
                 {
                     loadingOperation = SceneManager.LoadSceneAsync(mapName, LoadSceneMode.Additive);
+                    loadingOperation.completed += (asyncOperation) =>
+                    {
+                        SceneManager.SetActiveScene(SceneManager.GetSceneAt(1));
+                    };
                 }
                 menuCanvas.SetActive(false);
                 menuCamera.gameObject.SetActive(false);
@@ -167,10 +185,14 @@ public class MenuController : MonoBehaviour
         if (scene.name != "MainMenu")
         {
             loadingOperation = SceneManager.UnloadSceneAsync(scene);
-            Image backgroundGO = menuCanvas.transform.GetChild(1).GetComponent<Image>();
-            backgroundGO.sprite = Resources.Load<Sprite>("MenuBackground");
-            backgroundGO.color = new Color(255, 255, 255, 1);
-            pausedGameDialog.SetActive(false);
+            loadingOperation.completed += (asyncOperation) =>
+            {
+                Image backgroundGO = menuCanvas.transform.GetChild(1).GetComponent<Image>();
+                backgroundGO.sprite = Resources.Load<Sprite>("MenuBackground");
+                backgroundGO.color = new Color(255, 255, 255, 1);
+                pausedGameDialog.SetActive(false);
+                SceneManager.SetActiveScene(SceneManager.GetSceneAt(0));
+            };
         }
     }
 
@@ -237,11 +259,11 @@ public class MenuController : MonoBehaviour
         PlayerPrefs.SetInt("masterQuality", _qualityLevel);
         QualitySettings.SetQualityLevel(_qualityLevel);
 
-        PlayerPrefs.SetInt("masterFullScreen", (_isFullScreen ? 1 : 0));
+        PlayerPrefs.SetInt("masterFullScreen", _isFullScreen ? 1 : 0);
         Screen.fullScreen = _isFullScreen;
 
         PlayerPrefs.SetInt("masterResolution", resolutions.ToList<Resolution>().IndexOf(resolution));
-        Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+        Screen.SetResolution(resolution.width, resolution.height, FullScreenMode.FullScreenWindow, resolution.refreshRateRatio);
         StartCoroutine(ConfirmationBox());
     }
 

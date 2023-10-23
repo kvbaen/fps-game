@@ -13,17 +13,17 @@ namespace FpsGame.ProjectileGun
         private bool ShouldShoot => Input.GetKey(playerController.shootKey);
         private bool ShouldShootOnClick => Input.GetKeyDown(playerController.shootKey);
         private bool ShouldReload => Input.GetKey(playerController.reloadKey) && bulletsLeftInMagazine < gunData.magSize && !isReloading && gameObject.activeSelf;
-        private bool CanReload => ammoCount > 0;
+        private bool CanReload => ammoCount > 0 && !isReloading;
 
         // References
         public Camera fpsCam;
         public Transform attackPoint;
-        public GameObject bulletPrefab;
         public PlayerController playerController;
         public GameObject hitPrefab;
         private Animator animator;
+        private AudioSource audioSource;
+        private AudioManager audioManager;
         [SerializeField] public GunData gunData;
-        [SerializeField] private string enemyTag;
 
         // Graphics
         public ParticleSystem muzzleFlash;
@@ -43,6 +43,9 @@ namespace FpsGame.ProjectileGun
             waitTime = gunData.takeTime;
             animator = GetComponent<Animator>();
             ammoCount = gunData.magNumber * gunData.magSize;
+            audioSource = GetComponent<AudioSource>();
+            audioManager = FindObjectOfType<AudioManager>();
+
         }
         private void FixedUpdate()
         {
@@ -53,7 +56,7 @@ namespace FpsGame.ProjectileGun
         }
         private void Update()
         {
-            if(waitTime > 0) waitTime -= Time.deltaTime;
+            if (waitTime > 0) waitTime -= Time.deltaTime;
             HandleInput();
 
             if (ammunitionDisplay != null)
@@ -69,6 +72,7 @@ namespace FpsGame.ProjectileGun
             {
                 walkSpread = Vector3.zero;
             }
+            time += Time.smoothDeltaTime;
         }
 
         private void HandleInput()
@@ -105,13 +109,12 @@ namespace FpsGame.ProjectileGun
                         (gunData.timeBetweenShots * 60) * Time.deltaTime
                     )
                 );
-                
+
                 if (Vector3.Distance(playerController.gunRotation, Vector3.zero) < 0.1)
                 {
                     playerController.SetGunRotation(Vector3.zero);
                 }
             }
-            time += Time.smoothDeltaTime;
         }
 
         private void Shoot()
@@ -133,9 +136,7 @@ namespace FpsGame.ProjectileGun
                 ray = fpsCam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
             }
 
-            RaycastHit hit;
-
-            if (Physics.Raycast(ray, out hit))
+            if (Physics.Raycast(ray, out RaycastHit hit))
             {
                 targetPoint = hit.point;
                 Target damageable = hit.transform.GetComponentInParent<Target>();
@@ -147,8 +148,8 @@ namespace FpsGame.ProjectileGun
                 {
                     damageable.TakeDamage(gunData.damage);
                 }
-                GameObject hitPoint = Instantiate(hitPrefab, targetPoint, Quaternion.identity);
-                Destroy(hitPoint, 5);
+                /*GameObject hitPoint = Instantiate(hitPrefab, targetPoint, Quaternion.identity);
+                Destroy(hitPoint, 5);*/
             }
             else
             {
@@ -161,8 +162,7 @@ namespace FpsGame.ProjectileGun
 
             if (muzzleFlash != null)
             {
-                ParticleSystem currentMuzzleFlash = Instantiate(muzzleFlash, attackPoint.position, Quaternion.identity);
-                currentMuzzleFlash.transform.forward = directionWithoutSpread.normalized;
+                muzzleFlash.Play();
             }
 
             bulletsLeftInMagazine--;
@@ -254,7 +254,9 @@ namespace FpsGame.ProjectileGun
         }
         private void SpawnBullet()
         {
-            GameObject currentBullet = Instantiate(bulletPrefab, attackPoint.position, Quaternion.identity);
+            GameObject currentBullet = Instantiate(gunData.bulletPrefab, attackPoint.position, Quaternion.identity);
+            /*audioSource.Play();*/
+            audioManager.Play(gunData.bulletPrefab.name + " Shoot", gameObject);
             if (currentBullet != null)
             {
                 currentBullet.transform.LookAt(targetPoint);

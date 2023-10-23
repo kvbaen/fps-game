@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Renetti
   m_EditorClassIdentifier: 
   name: Renetti
+  isTwoHanded: 0
   takeTime: 0.8
   damage: 20
   maxDistance: 500
@@ -43,7 +44,9 @@ MonoBehaviour:
   recoilResetTime: 1
   spread: 0.1
   headDamageMultiplier: 4
-  shootForce: 35
+  shootForce: 2
+  bulletPrefab: {fileID: 1836865387895691768, guid: f497aa3c501294048883e3b41afff5bf, type: 3}
   currentAmmo: 20
   magSize: 20
   reloadTime: 2
+  magNumber: 4

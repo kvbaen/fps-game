@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: AK
   m_EditorClassIdentifier: 
   name: AK-47
+  isTwoHanded: 1
+  takeTime: 0
   damage: 32
   maxDistance: 600
   isAutomatic: 1
@@ -52,7 +54,9 @@ MonoBehaviour:
   recoilResetTime: 0.75
   spread: 0.2
   headDamageMultiplier: 4
-  shootForce: 45
+  shootForce: 3
+  bulletPrefab: {fileID: 5721009653035204392, guid: d8d0138d453350347817e11727ba5de2, type: 3}
   currentAmmo: 30
   magSize: 30
   reloadTime: 1.5
+  magNumber: 0

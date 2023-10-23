@@ -20,11 +20,11 @@ public class UICanvasController : MonoBehaviour
 
     void Update()
     {
-        if (menuController.crosshair != crosshairImage.sprite)
+        if (menuController != null && menuController.crosshair != crosshairImage.sprite)
         {
             crosshairImage.sprite = menuController.crosshair;
         }
-        if (crosshairColor != crosshairImage.color)
+        if (menuController != null && crosshairColor != crosshairImage.color)
         {
             crosshairImage.color = crosshairColor;
         }

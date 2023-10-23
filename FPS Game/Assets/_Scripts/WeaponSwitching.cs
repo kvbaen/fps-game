@@ -25,9 +25,6 @@ public class WeaponSwitching : MonoBehaviour
     private void Awake()
     {
         playerController = GetComponentInParent<PlayerController>();
-    }
-    private void Start()
-    {
         SetWeapon();
         Select(selectedWeapon);
         timeSinceLastSwitch = 0f;

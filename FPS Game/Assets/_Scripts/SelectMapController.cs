@@ -37,7 +37,7 @@ public class SelectMapController : MonoBehaviour
                 int j = i % 6;
                 Vector3 positionBTN = new((j % 3 + 1) * 50 + (j % 3) * widthBTN, j / 3 > 0 ? -heightBTN * Mathf.Floor(j / 3) - 50 * (Mathf.Floor(j / 3) + 1) : -50, 0);
                 Button mapBTN = Instantiate(mapBTNPrefab);
-                mapBTN.name = menuController.mapNames[i] + "BTN";
+                mapBTN.name = $"{menuController.mapNames[i]}BTN";
                 mapBTN.transform.SetParent(transform);
                 RectTransform rectMapBTN = mapBTN.GetComponent<RectTransform>();
                 TextMeshProUGUI mapName = mapBTN.GetComponentInChildren<TextMeshProUGUI>();

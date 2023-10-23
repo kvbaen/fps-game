@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fc8bb9f95d8f2a4a959d09ee91a8814, type: 3}
+  m_Name: TestBot
+  m_EditorClassIdentifier: 
+  name: TestBot
+  shootForce: 0
+  attackRange: 4
+  sightRange: 8
+  gunSpread: 0
+  projectile: {fileID: 5721009653035204392, guid: d8d0138d453350347817e11727ba5de2, type: 3}
+  gunData: {fileID: 11400000, guid: 3615ded4248e51b4b995fabbd98e0967, type: 2}
+  timeBetweenAttacks: 1
+  patrollingSpeed: 1.5
+  chasingSpeed: 4

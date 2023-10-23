@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Glock
   m_EditorClassIdentifier: 
   name: Glock
+  isTwoHanded: 0
+  takeTime: 0
   damage: 20
   maxDistance: 500
   isAutomatic: 0
@@ -43,6 +45,8 @@ MonoBehaviour:
   spread: 0.1
   headDamageMultiplier: 4
   shootForce: 35
+  bulletPrefab: {fileID: 1836865387895691768, guid: f497aa3c501294048883e3b41afff5bf, type: 3}
   currentAmmo: 20
   magSize: 20
   reloadTime: 1
+  magNumber: 0

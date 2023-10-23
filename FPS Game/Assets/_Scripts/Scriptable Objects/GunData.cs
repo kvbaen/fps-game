@@ -5,6 +5,7 @@ public class GunData : ScriptableObject
 {
     [Header("Info")]
     public new string name;
+    public bool isTwoHanded;
 
     [Header("Shooting")]
     public float takeTime;
@@ -18,6 +19,7 @@ public class GunData : ScriptableObject
 
     [Header("Bullet")]
     public float shootForce;
+    public GameObject bulletPrefab;
 
     [Header("Reloading")]
     public int currentAmmo;
