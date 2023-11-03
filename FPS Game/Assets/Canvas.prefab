@@ -922,10 +922,6 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 3
       objectReference: {fileID: 0}
-    - target: {fileID: 932530742412566724, guid: bed43a18b83e3e3449ab7549c36d2859, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 1061620911297494322, guid: bed43a18b83e3e3449ab7549c36d2859, type: 3}
       propertyPath: m_SizeDelta.x
       value: 30
@@ -1100,6 +1096,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 932530742412566724, guid: bed43a18b83e3e3449ab7549c36d2859, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300044, guid: 6674e8c43c63e4f4184cbd009379498d, type: 3}
     - target: {fileID: 932530742412566724, guid: bed43a18b83e3e3449ab7549c36d2859, type: 3}
       propertyPath: m_Maskable
       value: 0
@@ -1310,6 +1310,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 932530742412566724, guid: bed43a18b83e3e3449ab7549c36d2859, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300044, guid: 6674e8c43c63e4f4184cbd009379498d, type: 3}
     - target: {fileID: 1061620911297494322, guid: bed43a18b83e3e3449ab7549c36d2859, type: 3}
       propertyPath: m_SizeDelta.x
       value: 30
@@ -1476,6 +1480,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 932530742412566724, guid: bed43a18b83e3e3449ab7549c36d2859, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300044, guid: 6674e8c43c63e4f4184cbd009379498d, type: 3}
     - target: {fileID: 932530742412566724, guid: bed43a18b83e3e3449ab7549c36d2859, type: 3}
       propertyPath: m_Color.a
       value: 1

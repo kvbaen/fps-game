@@ -28,6 +28,7 @@ public class AudioManager : MonoBehaviour
             s.source.pitch = s.pitch;
             s.source.loop = s.loop;
             s.source.playOnAwake = s.playOnAwake;
+            s.source.spatialBlend = s.spatialBlend;
         }
     }
 
@@ -55,6 +56,7 @@ public class AudioManager : MonoBehaviour
                 audioSource.pitch = s.source.pitch;
                 audioSource.loop = s.source.loop;
                 audioSource.playOnAwake = s.source.playOnAwake;
+                audioSource.spatialBlend = s.spatialBlend;
                 audioSource.Play();
             }
         }

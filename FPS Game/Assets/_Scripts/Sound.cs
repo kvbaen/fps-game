@@ -14,4 +14,6 @@ public class Sound
     public AudioMixerGroup output;
     public bool loop;
     public bool playOnAwake;
+    [Range(0f, 1f)]
+    public float spatialBlend;
 }

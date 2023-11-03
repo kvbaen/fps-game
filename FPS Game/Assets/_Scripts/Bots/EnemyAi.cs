@@ -24,10 +24,15 @@ public class EnemyAi : MonoBehaviour
     private readonly string speedHash = "Speed";
     public GameObject gunHolder;
     public Transform[] guns;
-    private Transform activeGun;
+    public Transform activeGun;
     private BotIK botIK;
     private Vector3 hitTarget;
     private Transform attackPoint;
+    private int currentAmmoInMagazine;
+    private int totalAmmo;
+    private bool ShouldReload => currentAmmoInMagazine == 0 && totalAmmo >= botData.gunData.magSize && !IsReloading;
+    private bool CanShoot => currentAmmoInMagazine > 0 && !_alreadyAttacked && !IsReloading;
+    private bool IsReloading = false;
 
     [Header("States Parameters")]
     public bool playerInAttackRange;
@@ -41,6 +46,8 @@ public class EnemyAi : MonoBehaviour
         _playerController = FindObjectOfType<PlayerController>();
         audioManager = FindObjectOfType<AudioManager>();
         botIK = GetComponent<BotIK>();
+        currentAmmoInMagazine = botData.gunData.magSize;
+        totalAmmo = botData.gunData.magSize * botData.gunData.magNumber;
         if (gunHolder != null)
         {
             guns = new Transform[gunHolder.transform.childCount];
@@ -87,6 +94,7 @@ public class EnemyAi : MonoBehaviour
     private void Patroling()
     {
         agent.speed = botData.patrollingSpeed;
+        botIK.ActivateAim(false);
         if (animator.GetBool(isAimingHash)) animator.SetBool(isAimingHash, false);
         if (waypoints.Length > 0)
         {
@@ -115,15 +123,17 @@ public class EnemyAi : MonoBehaviour
         if (animator.GetBool(isAimingHash)) animator.SetBool(isAimingHash, false);
         agent.SetDestination(player.position);
         agent.speed = botData.chasingSpeed;
-        RotateTowardPlayer();
+        botIK.ActivateAim(true);
+        //RotateTowardPlayer();
     }
 
     private void AttackPlayer()
     {
         //Make sure enemy doesn't move
         agent.SetDestination(transform.position);
+        botIK.ActivateAim(true);
         RotateTowardPlayer();
-        if (!_alreadyAttacked)
+        if (CanShoot)
         {
             ///Attack code here
             if (!animator.GetBool(isAimingHash)) animator.SetBool(isAimingHash, true);
@@ -138,11 +148,15 @@ public class EnemyAi : MonoBehaviour
             hitTarget = hit.point;
             if (hit.collider != null && hit.collider.name == _playerController.name)
             {
-                Debug.Log(hit.collider.name);
                 _playerController.TakeDamage(botData.gunData.damage);
             }
             _alreadyAttacked = true;
+            currentAmmoInMagazine--;
             Invoke(nameof(ResetAttack), botData.timeBetweenAttacks);
+        }
+        else if (ShouldReload)
+        {
+            ReloadGun();
         }
     }
     private void ResetAttack()
@@ -179,5 +193,24 @@ public class EnemyAi : MonoBehaviour
         Vector3 directionToTarget = player.position - transform.position;
         Quaternion lookRotation = Quaternion.LookRotation(new Vector3(directionToTarget.x, 0, directionToTarget.z));
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * agent.velocity.magnitude > 0 ? agent.velocity.magnitude : 5) /*Quaternion.RotateTowards(transform.rotation, lookRotation, 10)*/;
+    }
+
+    private void ReloadGun()
+    {
+        IsReloading = true;
+        animator.SetTrigger("Reload");
+        //botIK.ChangeIKAmountElbow(0.25f);
+        //botIK.ChangeIKAmountHand(0.25f);
+        currentAmmoInMagazine = botData.gunData.magSize;
+        totalAmmo -= botData.gunData.magSize;
+    }
+
+    private void FinishRealod()
+    {
+        //botIK.ChangeIKAmountElbow(1f);
+        //botIK.ChangeIKAmountHand(1f);
+        IsReloading = false;
+        _alreadyAttacked = false;
+        animator.SetBool(isAimingHash, false);
     }
 }
