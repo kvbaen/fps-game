@@ -383,7 +383,7 @@ Transform:
   m_Children:
   - {fileID: 4208144909360277320}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!143 &5669980059923102559
 CharacterController:
@@ -19921,10 +19921,42 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3699793388858841995}
     m_Modifications:
+    - target: {fileID: 2201264149123309618, guid: bd11b2fc53aefe548b9e3c7bfc4393b7, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3767939292210359088, guid: bd11b2fc53aefe548b9e3c7bfc4393b7, type: 3}
+      propertyPath: m_Maskable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3767939292210359088, guid: bd11b2fc53aefe548b9e3c7bfc4393b7, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3813707405818606021, guid: bd11b2fc53aefe548b9e3c7bfc4393b7, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6893364668611387988, guid: bd11b2fc53aefe548b9e3c7bfc4393b7, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7128546790703191217, guid: bd11b2fc53aefe548b9e3c7bfc4393b7, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7314488969862167240, guid: bd11b2fc53aefe548b9e3c7bfc4393b7, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7972652846278011777, guid: bd11b2fc53aefe548b9e3c7bfc4393b7, type: 3}
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 1914854659694451315}
+    - target: {fileID: 7972652846278011777, guid: bd11b2fc53aefe548b9e3c7bfc4393b7, type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 25
+      objectReference: {fileID: 0}
     - target: {fileID: 7972652846278011788, guid: bd11b2fc53aefe548b9e3c7bfc4393b7, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -20017,6 +20049,14 @@ PrefabInstance:
       propertyPath: weaponSwitching
       value: 
       objectReference: {fileID: 5114975752946015816}
+    - target: {fileID: 8918757505166917790, guid: bd11b2fc53aefe548b9e3c7bfc4393b7, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9154422085709372371, guid: bd11b2fc53aefe548b9e3c7bfc4393b7, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:

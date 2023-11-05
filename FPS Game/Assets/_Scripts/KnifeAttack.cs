@@ -58,7 +58,7 @@ public class KnifeAttack : MonoBehaviour
             Target damageable = hit.transform.GetComponentInParent<Target>();
             if (damageable != null)
             {
-                damageable?.TakeDamage(attackDamage);
+                damageable.TakeDamage(attackDamage, false);
             }
             if (!hit.collider.gameObject.CompareTag("Weapon") && !hit.collider.gameObject.CompareTag("Target"))
             {

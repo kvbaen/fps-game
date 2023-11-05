@@ -142,11 +142,11 @@ namespace FpsGame.ProjectileGun
                 Target damageable = hit.transform.GetComponentInParent<Target>();
                 if (hit.collider.gameObject.CompareTag("Head") && damageable != null)
                 {
-                    damageable.TakeDamage(gunData.damage * gunData.headDamageMultiplier);
+                    damageable.TakeDamage(gunData.damage * gunData.headDamageMultiplier, true);
                 }
                 else if (damageable != null)
                 {
-                    damageable.TakeDamage(gunData.damage);
+                    damageable.TakeDamage(gunData.damage, false);
                 }
                 /*GameObject hitPoint = Instantiate(hitPrefab, targetPoint, Quaternion.identity);
                 Destroy(hitPoint, 5);*/
