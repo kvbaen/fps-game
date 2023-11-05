@@ -137,7 +137,7 @@ public class PlayerController : MonoBehaviour
 
     private void HandleCrouch()
     {
-        if (Physics.Raycast(cameraHolder.transform.position, Vector3.up, 1f))
+        if (IsAbove())
             return;
 
         float targetHeight = ShouldCrouch ? crouchingHeight : standingHeight;
@@ -173,6 +173,15 @@ public class PlayerController : MonoBehaviour
     {
         health -= damage;
         if (health <= 0) Destroy(gameObject);
+    }
+
+    private bool IsAbove()
+    {
+        RaycastHit hit;
+        float rayLength = 0.2f;
+        Vector3 rayOrigin = transform.position + (Vector3.up * characterController.height);
+
+        return Physics.Raycast(rayOrigin, Vector3.up, out hit, rayLength);
     }
 }
 
