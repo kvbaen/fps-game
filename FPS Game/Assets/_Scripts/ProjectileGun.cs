@@ -9,6 +9,7 @@ namespace FpsGame.ProjectileGun
         private int bulletsLeftInMagazine, bulletsShot;
 
         // Flags
+        private bool isPlayerAlive => playerController.health > 0;
         private bool isShooting = false, isReadyToShoot = false, isReloading;
         private bool ShouldShoot => Input.GetKey(playerController.shootKey);
         private bool ShouldShootOnClick => Input.GetKeyDown(playerController.shootKey);
@@ -56,6 +57,7 @@ namespace FpsGame.ProjectileGun
         }
         private void Update()
         {
+            if (!isPlayerAlive) return;
             if (waitTime > 0) waitTime -= Time.deltaTime;
             HandleInput();
 

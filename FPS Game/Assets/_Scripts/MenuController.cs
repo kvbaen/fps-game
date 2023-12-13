@@ -5,8 +5,6 @@ using System.IO;
 using UnityEngine.UI;
 using System.Collections;
 using TMPro;
-using Unity.VisualScripting;
-using System.Data.Common;
 using System.Linq;
 
 public class MenuController : MonoBehaviour
@@ -16,6 +14,10 @@ public class MenuController : MonoBehaviour
     [SerializeField] private GameObject menuCanvas;
     [SerializeField] private Camera menuCamera = null;
     [SerializeField] private GameObject pausedGameDialog;
+    [SerializeField] public GameObject diedDialog;
+    [SerializeField] private GameObject BO_UI;
+    [SerializeField] private GameObject endGameDialog;
+    [SerializeField] private TMP_Text timerText;
     private bool IsESCPressed => Input.GetKeyDown(KeyCode.Escape);
 
     [Header("Volume Settings")]
@@ -59,6 +61,10 @@ public class MenuController : MonoBehaviour
     public List<string> mapNames;
     public string selectedMap;
     AsyncOperation loadingOperation;
+
+    private bool IsPlayerAlive = true;
+    private Button playButton;
+    private Button playAgainButton;
 
     private void Awake()
     {
@@ -106,11 +112,18 @@ public class MenuController : MonoBehaviour
             resolutionDropdown.value = loadedResolutionIndex;
         }
         LoadMaps();
+        GetReferenceOfButtons();
     }
 
     private void Update()
     {
-        if (IsESCPressed && SceneManager.loadedSceneCount > 1)
+        /*if (IsPlayerAlive && endGameStatement)
+        {
+            if (!wonDialog.activeSelf) EndGame();
+            return;
+        }*/
+
+        if (IsESCPressed && SceneManager.loadedSceneCount > 1 && IsPlayerAlive)
         {
             if (_isGamePaused)
             {
@@ -123,6 +136,19 @@ public class MenuController : MonoBehaviour
                 _isGamePaused = true;
             }
         }
+
+        if (!IsPlayerAlive && !diedDialog.activeSelf)
+        {
+            Died();
+        }
+
+        ControlVisibilityOfButtons();
+    }
+
+    void OnEnable()
+    {
+        PlayerController.PlayerDied += PlayerDied;
+        TimerPanelController.CurrentTimeEmitter += SetTimerText;
     }
 
     public void SetResolution(int resolutionIndex)
@@ -137,6 +163,7 @@ public class MenuController : MonoBehaviour
 
     public void EnterMap()
     {
+        IsPlayerAlive = true;
         foreach (var mapName in mapNames)
         {
             if (mapName.Equals(selectedMap))
@@ -187,12 +214,17 @@ public class MenuController : MonoBehaviour
             loadingOperation = SceneManager.UnloadSceneAsync(scene);
             loadingOperation.completed += (asyncOperation) =>
             {
+                diedDialog.SetActive(false);
+                pausedGameDialog.SetActive(false);
                 Image backgroundGO = menuCanvas.transform.GetChild(1).GetComponent<Image>();
                 backgroundGO.sprite = Resources.Load<Sprite>("MenuBackground");
                 backgroundGO.color = new Color(255, 255, 255, 1);
-                pausedGameDialog.SetActive(false);
                 SceneManager.SetActiveScene(SceneManager.GetSceneAt(0));
             };
+        }
+        if(!IsPlayerAlive)
+        {
+            IsPlayerAlive = true;
         }
     }
 
@@ -311,6 +343,38 @@ public class MenuController : MonoBehaviour
         confirmationPrompt.SetActive(false);
     }
 
+    public void SetTimerText(TMP_Text currentTime)
+    {
+        timerText.text = currentTime.text;
+    }
+
+    public void PlayerDied()
+    {
+        IsPlayerAlive = false;
+    }
+
+    public void EndGame()
+    {
+        menuCanvas.SetActive(true);
+        endGameDialog.SetActive(true);
+        Image backgroundGO = menuCanvas.transform.GetChild(1).GetComponent<Image>();
+        backgroundGO.sprite = null;
+        backgroundGO.color = new Color(0, 0, 0, 0.6f);
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+    }
+
+    public void Died()
+    {
+        menuCanvas.SetActive(true);
+        diedDialog.SetActive(true);
+        Image backgroundGO = menuCanvas.transform.GetChild(1).GetComponent<Image>();
+        backgroundGO.sprite = null;
+        backgroundGO.color = new Color(0, 0, 0, 0.6f);
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+    }
+
     public void PauseGame()
     {
         Time.timeScale = 0;
@@ -331,5 +395,38 @@ public class MenuController : MonoBehaviour
         menuCanvas.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+    }
+
+    public void GetReferenceOfButtons()
+    {
+        Transform playButtonTransform = BO_UI.transform.Find("Play BTN");
+        playButton = playButtonTransform.GetComponent<Button>();
+        Transform playAgainButtonTransform = BO_UI.transform.Find("Play Again BTN");
+        playAgainButton = playAgainButtonTransform.GetComponent<Button>();
+        playAgainButton.onClick.AddListener(HandlePlayAgainButtonClick);
+    }
+
+    private void HandlePlayAgainButtonClick()
+    {
+        Time.timeScale = 1;
+        AudioListener.pause = false;
+        diedDialog.SetActive(false);
+        pausedGameDialog.SetActive(false);
+        menuCanvas.SetActive(false);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
+    public void ControlVisibilityOfButtons()
+    {
+        if (!IsPlayerAlive)
+        {
+            playButton.gameObject.SetActive(false);
+            playAgainButton.gameObject.SetActive(true);
+        } else
+        {
+            playButton.gameObject.SetActive(true);
+            playAgainButton.gameObject.SetActive(false);
+        }
     }
 }

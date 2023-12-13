@@ -12,12 +12,12 @@ public class WeaponSwitching : MonoBehaviour
     [SerializeField] public int selectedWeapon;
 
     private float timeSinceLastSwitch;
-    private bool ShouldSwitchToFirstGun => Input.GetKey(playerController.switchToFirstGunKey) && timeSinceLastSwitch >= switchTime && !menuController._isGamePaused;
-    private bool ShouldSwitchToSecondGun => Input.GetKey(playerController.switchToSecondGunKey) && timeSinceLastSwitch >= switchTime && !menuController._isGamePaused;
-    private bool ShouldSwitchToKnife => Input.GetKey(playerController.switchToKnifeKey) && timeSinceLastSwitch >= switchTime && !menuController._isGamePaused;
-    private bool ShouldSwitchToGranade => Input.GetKey(playerController.switchToGranadeKey) && timeSinceLastSwitch >= switchTime && !menuController._isGamePaused;
-    private bool ShouldSwitchToNextWeapon => Input.mouseScrollDelta.y < 0 && !menuController._isGamePaused;
-    private bool ShouldSwitchToPreviousWeapon => Input.mouseScrollDelta.y > 0 && !menuController._isGamePaused;
+    private bool ShouldSwitchToFirstGun => Input.GetKey(playerController.switchToFirstGunKey) && timeSinceLastSwitch >= switchTime && !menuController._isGamePaused && playerController.health > 0;
+    private bool ShouldSwitchToSecondGun => Input.GetKey(playerController.switchToSecondGunKey) && timeSinceLastSwitch >= switchTime && !menuController._isGamePaused && playerController.health > 0;
+    private bool ShouldSwitchToKnife => Input.GetKey(playerController.switchToKnifeKey) && timeSinceLastSwitch >= switchTime && !menuController._isGamePaused && playerController.health > 0;
+    private bool ShouldSwitchToGranade => Input.GetKey(playerController.switchToGranadeKey) && timeSinceLastSwitch >= switchTime && !menuController._isGamePaused && playerController.health > 0;
+    private bool ShouldSwitchToNextWeapon => Input.mouseScrollDelta.y < 0 && !menuController._isGamePaused && playerController.health > 0;
+    private bool ShouldSwitchToPreviousWeapon => Input.mouseScrollDelta.y > 0 && !menuController._isGamePaused && playerController.health > 0;
     private PlayerController playerController;
     private MenuController menuController;
     [SerializeField]

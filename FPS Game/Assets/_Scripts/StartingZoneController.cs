@@ -9,7 +9,6 @@ public class StartingZoneController : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            Debug.Log("Leaving starting zone");
             ExitingFromStartingZone();
             Destroy(gameObject);
         }

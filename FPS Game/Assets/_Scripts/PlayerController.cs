@@ -67,6 +67,9 @@ public class PlayerController : MonoBehaviour
 
     private float rotationX = 0;
 
+    public delegate void SomeAction();
+    public static event SomeAction PlayerDied;
+
     void Awake()
     {
         characterController = GetComponent<CharacterController>();
@@ -77,6 +80,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (health == 0) return;
         if (menuController != null) CanMove = !menuController._isGamePaused;
         if (CanMove)
         {
@@ -172,7 +176,12 @@ public class PlayerController : MonoBehaviour
     public void TakeDamage(float damage)
     {
         health -= damage;
-        if (health <= 0) Destroy(gameObject);
+
+        if (health < 0) 
+            health = 0;
+
+        if (health <= 0) 
+            PlayerDied();
     }
 
     private bool IsAbove()

@@ -22,6 +22,7 @@ public class KnifeAttack : MonoBehaviour
     private Animator animator;
     private PlayerController playerController;
     private MenuController menuController;
+    private bool isPlayerAlive => playerController.health > 0;
     private bool ShouldAttack => Input.GetKey(playerController.shootKey) && !isAttacking && this.gameObject.activeInHierarchy && time >= timeBetweenAttack;
     private void Awake()
     {
@@ -32,7 +33,7 @@ public class KnifeAttack : MonoBehaviour
 
     private void Update()
     {
-        if (ShouldAttack && !menuController._isGamePaused)
+        if (ShouldAttack && !menuController._isGamePaused && isPlayerAlive)
         {
             isAttacking = true;
             animator.SetBool("isAttacking", true);

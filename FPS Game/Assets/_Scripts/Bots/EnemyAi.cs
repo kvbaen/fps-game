@@ -30,6 +30,7 @@ public class EnemyAi : MonoBehaviour
     private Transform attackPoint;
     private int currentAmmoInMagazine;
     private int totalAmmo;
+    private bool IsPlayerAlive => _playerController.health > 0;
     private bool ShouldReload => currentAmmoInMagazine == 0 && totalAmmo >= botData.gunData.magSize && !IsReloading;
     private bool CanShoot => currentAmmoInMagazine > 0 && !_alreadyAttacked && !IsReloading;
     private bool IsReloading = false;
@@ -86,8 +87,8 @@ public class EnemyAi : MonoBehaviour
             playerInAttackRange = Physics.CheckSphere(transform.position, botData.attackRange, whatIsPlayer);
 
             if (!playerInSightRange && !playerInAttackRange) Patroling();
-            if (playerInSightRange && !playerInAttackRange) ChasePlayer();
-            if (playerInAttackRange && playerInSightRange) AttackPlayer();
+            if (playerInSightRange && !playerInAttackRange && IsPlayerAlive) ChasePlayer();
+            if (playerInAttackRange && playerInSightRange && IsPlayerAlive) AttackPlayer();
         }
     }
 
