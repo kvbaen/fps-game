@@ -119,15 +119,15 @@ public class PlayerController : MonoBehaviour
         if (gunRotation != Vector3.zero && !IsMovingOrJumping)
         {
             Quaternion newRotation = Quaternion.Euler(gunRotationModifier);
-            cameraHolder.transform.localRotation = Quaternion.Lerp(
-                cameraHolder.transform.localRotation,
+            _mainCamera.transform.localRotation = Quaternion.Lerp(
+                _mainCamera.transform.localRotation,
                 newRotation,
                 rotationSpeed * Time.deltaTime
                );
         }
         else
         {
-            cameraHolder.transform.localRotation = Quaternion.Euler(gunRotationModifier);
+            _mainCamera.transform.localRotation = Quaternion.Euler(gunRotationModifier);
         }
 
         transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeedX, 0);
